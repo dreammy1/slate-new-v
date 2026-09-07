@@ -33,8 +33,13 @@ declare(strict_types=1);
 function _strip_install_base(string $html): string
 {
     $base = rtrim((string) parse_url(SLATE_URL, PHP_URL_PATH), '/');
-    if ($base === '') return $html;
-    return str_replace(['="' . $base . '/', "('" . $base . '/'], ['="/', "('/"], $html);
+    if ($base !== '') {
+        $html = str_replace(['="' . $base . '/', "('" . $base . '/'], ['="/', "('/"], $html);
+    }
+    $origin = rtrim((string) parse_url(SLATE_URL, PHP_URL_SCHEME), ':/') . '://'
+            . (string) parse_url(SLATE_URL, PHP_URL_HOST)
+            . ((int) parse_url(SLATE_URL, PHP_URL_PORT) > 0 ? ':' . (int) parse_url(SLATE_URL, PHP_URL_PORT) : '');
+    return $origin !== '://' ? str_replace($origin, 'http://localhost', $html) : $html;
 }
 
 function _render_fixtures(): array

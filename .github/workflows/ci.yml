@@ -300,18 +300,6 @@ jobs:
       - name: Seed render fixtures
         run: mysql -h 127.0.0.1 -P 3306 -uroot -proot slate_test < tests/fixtures/render-seed.sql
 
-      # Temporary diagnostic export: the CI database/bootstrap is authoritative
-      # for the generated render goldens when local Docker is unavailable.
-      - name: Export generated render goldens
-        run: |
-          php tests/bin/render-goldens.php
-          tar -czf /tmp/render-goldens.tgz tests/fixtures/documents/expected
-          echo "goldens=/tmp/render-goldens.tgz" >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload generated render goldens
-        uses: actions/upload-artifact@v4
-        with:
-          name: generated-render-goldens
-          path: /tmp/render-goldens.tgz
 
       - name: Smoke tests
         run: php tests/smoke.php
