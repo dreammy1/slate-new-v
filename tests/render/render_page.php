@@ -121,6 +121,15 @@ $report = static function (array $meta) use (&$RENDER_REPORTED, $rel): void {
     exit(0);
 };
 
+// Public studio views are rendered as real entry points, so the harness must
+// provision the same active-plugin state that a browser request would have.
+if (class_exists('PluginLoader') && !PluginLoader::isActive('studio')) {
+    $activation = PluginLoader::activate('studio');
+    if (empty($activation['ok'])) {
+        $report(['ok' => false, 'harness_error' => 'activating studio plugin: ' . ($activation['error'] ?? 'unknown error')]);
+    }
+}
+
 /**
  * First scalar from a query, as [value, error]. The two failure modes are
  * kept apart on purpose: no rows is a fact about this tenant's data and a
