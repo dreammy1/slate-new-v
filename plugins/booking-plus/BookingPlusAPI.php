@@ -10,6 +10,7 @@
  * BookingAPI's public methods when we need service/appointment data.
  */
 
+if (!class_exists('BookingPlusAPI')) {
 class BookingPlusAPI {
 
     // ── Schema self-heal ─────────────────────────────────────────────────

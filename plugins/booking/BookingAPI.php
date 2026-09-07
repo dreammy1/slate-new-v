@@ -1461,13 +1461,14 @@ class BookingAPI {
      * so it can never clobber a later, better outcome.
      */
     private static function handleFailedPayment(int $apptId, array $obj, string $eventType): void {
+        $tid = current_tenant_id();
         $a = Database::row(
             "SELECT a.*, s.name AS service_name, p.name AS provider_name, p.email AS provider_email
                FROM booking_appointments a
-               JOIN booking_services  s ON s.id = a.service_id
+               JOIN booking_services  s ON s.id = a.service_id AND s.tenant_id = a.tenant_id
                JOIN booking_providers p ON p.id = a.provider_id
-              WHERE a.id = ?",
-            [$apptId]
+              WHERE a.id = ? AND a.tenant_id = ?",
+            [$apptId, $tid]
         );
         if (!$a) return;
         if ($a['status'] !== 'pending') return; // already resolved one way or another

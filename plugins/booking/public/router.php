@@ -865,7 +865,7 @@ function bookpub_render_step4(array $service, array $provider, string $date, str
     if ($isMulti) {
         echo '<div class="book-multiselect-summary"><div class="book-multiselect-summary-title">Booking these ' . count($multiSelections) . ' times</div><ul class="book-multiselect-summary-list">';
         foreach ($multiSelections as $dt) {
-            $ts = strtotime($dt) ?: time();
+            $ts = strtotime($dt) ?: slate_db_time();
             echo '<li class="book-multiselect-summary-item">'
                .   '<span class="book-multiselect-summary-date">'
                .     '<span class="book-multiselect-summary-dow">' . e(date('D', $ts)) . '</span>'

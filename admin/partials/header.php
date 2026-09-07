@@ -430,8 +430,8 @@ if (!function_exists('slate_admin_time_ago')) {
         static $dbNowTs = null;
         if ($dbNowTs === null) {
             $raw = (function_exists('slate_db_now') && class_exists('Database'))
-                ? slate_db_now() : date('Y-m-d H:i:s');
-            $dbNowTs = strtotime($raw) ?: time();
+                ? slate_db_now() : '';
+            $dbNowTs = $raw !== '' ? (strtotime($raw) ?: slate_db_time()) : slate_db_time();
         }
         $diff = max(0, $dbNowTs - $ts);
         if ($diff < 60)      return 'just now';
