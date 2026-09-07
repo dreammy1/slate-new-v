@@ -1,0 +1,800 @@
+/* ──────────────────────────────────────────────────────────────────
+ * Small Business Kit — public stylesheet
+ *
+ * All sb-* blocks are styled here. Every color, radius and font is
+ * driven by --sb-* CSS variables, which are set by the active theme.
+ * Switching themes restyles every block on every page automatically.
+ * ──────────────────────────────────────────────────────────────── */
+
+/* ── Shared container geometry ──────────────────────────────
+ * ONE source of truth for how wide the content column is and how
+ * much side gutter it has. Every inner wrapper (header, hero,
+ * body sections, CTA band, footer) uses these so the left/right
+ * content edges line up perfectly all the way down the page,
+ * regardless of which section you're looking at. See the
+ * ".sbk-container" standardization rule in HARD OVERRIDES below. */
+.cb-public { --sbk-container: 1320px; --sbk-gutter: clamp(20px, 4vw, 40px); }
+
+/* Page container fix — let sb-* sections break out of the 820px cap. */
+.cb-public main.cb-page:has(> section.sb), .cb-public main.cb-page:has(> section.sb-ctaband)
+  { max-width: none !important; padding: 0 !important; }
+@supports not (selector(:has(*))) { .cb-public main.cb-page { max-width: none; padding: 0; } }
+.cb-public { overflow-x: hidden; }
+
+/* Heading-color overrides — beat the .cb-public h1,h2,h3 ink rule
+   which would otherwise paint our hero/CTA headings dark-on-dark. */
+.cb-public .sb-hero h1,
+.cb-public .sb-bg-dark h2,
+.cb-public .sb-bg-dark h3,
+.cb-public .sb-ctaband h2 { color: #fff !important; }
+.cb-public .sb-hero h1 em,
+.cb-public .sb-bg-dark h2 em,
+.cb-public .sb-ctaband h2 em { color: var(--slate-color-accent, #00c6ff) !important; }
+.cb-public .sb h2 { color: var(--slate-color-text, #0b1c2c); }
+.cb-public .sb h2 em { color: var(--slate-color-accent, #00c6ff); }
+.cb-public .sb-card h3 { color: var(--slate-color-text, #0b1c2c); }
+.cb-public .sb-bg-dark .sb-card h3 { color: #fff !important; }
+
+/* ── Base ───────────────────────────────────────────────── */
+.sb, .sb * { box-sizing: border-box; }
+.sb { font-family: var(--slate-font-sans); color: var(--slate-color-text); line-height: 1.6; }
+.sb img { max-width: 100%; height: auto; display: block; }
+.sb h1, .sb h2, .sb h3, .sb h4 { font-family: var(--slate-font-heading); letter-spacing: -.02em; }
+.sb svg { flex: none; }
+
+/* ── Container & section frame ──────────────────────────────
+ * IMPORTANT: every container (.sbk-mainnav-inner header, hero
+ * inner, body sb-inner, footer-inner) must share the same
+ * max-width AND horizontal padding so vertical alignment is
+ * consistent down the page. See the "HARD OVERRIDES" block at
+ * the bottom of this file for the alignment guarantee. */
+.sb { padding: clamp(64px, 9vw, 120px) 0; }
+.sb-compact { padding: clamp(48px, 6vw, 80px) 0; }
+.sb-inner {
+  width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 40px);
+}
+.sb-bg-page    { background: var(--slate-color-canvas); }
+.sb-bg-surface { background: var(--slate-color-surface); }
+.sb-bg-tint    { background: var(--slate-color-surface-sunken); }
+.sb-bg-dark    { background: var(--slate-color-text); color: #fff; }
+.sb-bg-dark p, .sb-bg-dark .sb-section-sub { color: rgba(255,255,255,.74); }
+.sb-bg-dark h2, .sb-bg-dark h3 { color: #fff; }
+
+/* ── Section head (eyebrow + h2 + sub) ──────────────────── */
+.sb-head { text-align: center; max-width: 720px; margin: 0 auto 52px; }
+.sb-head.sb-head-left { text-align: left; margin: 0 0 44px; max-width: 640px; }
+.sb-eyebrow {
+  display: inline-block; font-size: 12px; letter-spacing: .14em;
+  text-transform: uppercase; font-weight: var(--slate-font-weight-strong, 700); color: var(--slate-color-accent);
+  margin-bottom: 14px;
+}
+.sb h2 { font-size: var(--sbk-h2-size, clamp(28px, 4vw, 44px)); line-height: 1.15; font-weight: var(--sbk-h2-weight, var(--slate-font-weight-display, 800)); letter-spacing: var(--slate-tracking-heading, -.025em); margin: 0 0 16px; text-wrap: balance; }
+.sb h2 em { font-style: normal; color: var(--slate-color-accent); }
+.sb-section-sub { font-size: var(--sbk-sub-size, 17px); color: var(--slate-color-text-muted); line-height: 1.65; margin: 0; }
+
+/* ── Buttons ────────────────────────────────────────────── */
+.sb-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: var(--sbk-btn-pad, 14px 26px); border-radius: var(--slate-radius-control);
+  font-weight: var(--slate-font-weight-button, 700); font-size: var(--sbk-btn-fs, 15px); cursor: pointer;
+  text-decoration: none; border: 0;
+  transition: transform .2s, box-shadow .2s, background .2s, color .2s;
+}
+.sb-btn svg { width: 16px; height: 16px; }
+.sb-btn-primary { background: #00c6ff; background: var(--slate-color-accent, #00c6ff); color: #fff !important; box-shadow: 0 14px 30px -10px color-mix(in srgb, var(--slate-color-accent, #00c6ff) 65%, transparent); }
+.sb-btn-primary:hover { background: #0099cc; background: var(--slate-color-accent-secondary, #0099cc); transform: translateY(-2px); }
+.sb-btn-ghost { background: rgba(255,255,255,.10); color: #fff; border: 1px solid rgba(255,255,255,.28); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.sb-btn-ghost:hover { background: rgba(255,255,255,.20); transform: translateY(-2px); }
+.sb-btn-dark { background: var(--slate-color-text); color: #fff; }
+.sb-btn-dark:hover { background: var(--slate-color-text-secondary); transform: translateY(-2px); }
+.sb-btn-outline { background: transparent; color: var(--slate-color-text); border: 1.5px solid var(--slate-color-border); }
+.sb-btn-outline:hover { border-color: var(--slate-color-accent); color: var(--slate-color-accent); }
+
+/* When the hero carries its own nav, hide CB's site header to avoid double-stacking. */
+.cb-public:has(.sb-hero-with-nav) > header.cb-site-header { display: none !important; }
+@supports not (selector(:has(*))) {
+  /* Fallback: hide on every sb-themed page even without :has */
+  body.cb-public > header.cb-site-header { display: none; }
+}
+
+/* ── HERO (sb-hero) ─────────────────────────────────────── */
+.sb-hero {
+  position: relative; min-height: 72vh;
+  /* Top padding clears the global fixed header (utility ~46px + nav ~70px). */
+  padding: clamp(170px, 20vh, 220px) 0 clamp(80px, 12vh, 140px);
+  display: grid; place-items: center; color: #fff; overflow: hidden; isolation: isolate;
+}
+/* Center the inner container at the same 1320px gutter as the header.
+   Text alignment inside the container is handled by .sb-hero-left below —
+   we no longer use `place-items: center start` because grid justify-items
+   overrides the inner's `margin: 0 auto` and sticks it to the section's
+   left edge (which doesn't match the header's centered 1320px container). */
+.sb-hero-tall { min-height: 100vh; min-height: 100dvh; }
+.sb-hero-bg { position: absolute; inset: 0; z-index: -2; background-size: cover; background-position: center; }
+.sb-hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(8,18,28,.86) 0%, rgba(8,18,28,.72) 45%, rgba(8,18,28,.96) 100%),
+    radial-gradient(90% 60% at 50% 0%, color-mix(in srgb, var(--slate-color-accent, #00c6ff) 35%, transparent), transparent 70%);
+}
+/* Hero content sits inside the same 1320px gutter container the header uses. */
+.sb-hero-inner {
+  width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 40px);
+  text-align: center;
+  justify-self: center; /* belt-and-suspenders for grid contexts */
+}
+.sb-hero-left .sb-hero-inner { text-align: left; }
+.sb-hero-left .sb-hero-inner > * { max-width: 880px; margin-left: 0; margin-right: auto; }
+.sb-hero-left .sb-hero-inner > .sb-lede { max-width: 640px; }
+.sb-hero .sb-eyebrow-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: var(--slate-font-weight-strong, 700);
+  color: var(--slate-color-accent, #00c6ff);
+  background: color-mix(in srgb, var(--slate-color-accent, #00c6ff) 22%, rgba(0,0,0,.4));
+  border: 1px solid color-mix(in srgb, var(--slate-color-accent, #00c6ff) 65%, transparent);
+  padding: 7px 16px; border-radius: 999px; margin-bottom: 22px;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.sb-hero .sb-eyebrow-pill svg { width: 14px; height: 14px; }
+.sb-hero h1 { font-family: var(--slate-font-heading) !important; font-size: var(--sbk-hero-h1-size, clamp(36px, 6.5vw, 72px)); line-height: 1.06; font-weight: var(--sbk-hero-h1-weight, var(--slate-font-weight-display, 800)); letter-spacing: var(--slate-tracking-heading, -.025em); margin: 0 0 22px; text-shadow: 0 2px 22px rgba(0,0,0,.32); color: #fff; max-width: 880px; text-wrap: balance; }
+.sb-hero:not(.sb-hero-left) h1 { margin-left: auto; margin-right: auto; }
+.sb-hero h1 em { font-style: normal; color: var(--slate-color-accent); }
+.sb-hero p.sb-lede { font-size: var(--sbk-hero-lede-size, clamp(16px, 1.6vw, 19px)); color: rgba(255,255,255,.88); margin: 0 auto 32px; max-width: 62ch; line-height: 1.6; }
+.sb-hero-left p.sb-lede { margin: 0 0 32px; }
+.sb-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.sb-hero-left .sb-hero-actions { justify-content: flex-start; }
+
+/* Make absolutely sure every SBK heading uses the active theme's head font.
+   Beats CB's public.css h1,h2,h3 rules and any inherited font cascades. */
+.cb-public .sb h1, .cb-public .sb h2, .cb-public .sb h3,
+.cb-public .sb-hero h1, .cb-public .sb-page-hero h1,
+.cb-public .sb-card h3, .cb-public .sb-ctaband h2,
+.cb-public .sbk-footer-brand-name {
+  font-family: var(--slate-font-heading) !important;
+}
+
+/* Screen-reader-only utility (visually hidden, still readable to AT). */
+.sbk-sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ────────────────────────────────────────────────────────────────
+ * GLOBAL STICKY HEADER (.sbk-header)
+ *
+ * Rendered by SBKHeader on every CB page. Transparent over the hero,
+ * fades to solid dark when the user scrolls past 30px. The mobile
+ * menu opens as a full-viewport glass overlay.
+ * ──────────────────────────────────────────────────────────────── */
+.sbk-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+  color: #fff; font-family: var(--slate-font-sans, -apple-system, "Inter", sans-serif);
+  transition: background .25s ease, backdrop-filter .25s ease, box-shadow .25s ease;
+  background: transparent;
+}
+.sbk-header.sbk-scrolled {
+  background: color-mix(in srgb, var(--slate-color-text, #0b1c2c) 92%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 10px 30px -12px rgba(0,0,0,.45);
+}
+
+/* Top utility bar */
+.sbk-utility {
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  font-size: 13px; transition: background .25s, opacity .25s, max-height .25s;
+}
+.sbk-header.sbk-scrolled .sbk-utility { background: rgba(0,0,0,.10); }
+.sbk-utility-inner {
+  max-width: 1320px; margin: 0 auto; padding: 10px clamp(20px, 4vw, 40px);
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+}
+.sbk-utility-contact { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; }
+.sbk-utility-contact a {
+  display: inline-flex; align-items: center; gap: 9px;
+  color: rgba(255,255,255,.90); text-decoration: none; font-weight: 500;
+  transition: color .15s;
+}
+.sbk-utility-contact a:hover { color: var(--slate-color-accent, #00c6ff); }
+.sbk-utility-ico {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: inline-grid; place-items: center;
+  background: color-mix(in srgb, var(--slate-color-accent, #00c6ff) 22%, transparent);
+  color: var(--slate-color-accent, #00c6ff);
+}
+.sbk-utility-social { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+.sbk-utility-social a {
+  width: 30px; height: 30px; display: inline-grid; place-items: center;
+  color: rgba(255,255,255,.78); border-radius: 50%;
+  transition: color .15s, background .15s;
+}
+.sbk-utility-social a:hover { color: var(--slate-color-accent, #00c6ff); background: rgba(255,255,255,.08); }
+
+/* Main nav row */
+.sbk-mainnav { padding: 4px 0; }
+.sbk-mainnav-inner {
+  max-width: 1320px; margin: 0 auto; padding: 14px clamp(20px, 4vw, 40px);
+  display: flex; align-items: center; gap: 28px;
+}
+.sbk-brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; }
+.sbk-brand img { height: 44px; width: auto; transition: height .2s; filter: drop-shadow(0 4px 16px rgba(0,0,0,.35)); }
+.sbk-header.sbk-scrolled .sbk-brand img { height: 38px; }
+.sbk-brand-name { font-weight: var(--slate-font-weight-display, 800); font-size: 19px; letter-spacing: -.01em; font-family: var(--slate-font-heading); }
+
+.sbk-menu { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.sbk-menu-inner { display: flex; align-items: center; gap: 4px; }
+.sbk-menu a {
+  color: rgba(255,255,255,.92);
+  font-weight: var(--slate-font-weight-nav, 700); font-size: 14px;
+  letter-spacing: var(--slate-tracking-nav, .08em);
+  text-transform: var(--sbk-nav-transform, uppercase);
+  padding: 10px 18px; border-radius: 6px; text-decoration: none;
+  transition: color .15s, background .15s;
+}
+.sbk-menu a:hover { color: var(--slate-color-accent, #00c6ff); }
+.sbk-menu a.sbk-nav-cta {
+  background: var(--slate-color-accent, #00c6ff); color: #fff !important;
+  padding: 12px 22px; border-radius: var(--slate-radius-control, 999px);
+  margin-left: 12px;
+  box-shadow: 0 10px 26px -10px color-mix(in srgb, var(--slate-color-accent, #00c6ff) 65%, transparent);
+}
+.sbk-menu a.sbk-nav-cta:hover { background: var(--slate-color-accent-secondary, #0099cc); transform: translateY(-1px); }
+
+/* Burger + close (only shown on mobile / overlay) */
+.sbk-burger {
+  display: none; margin-left: auto;
+  width: 44px; height: 44px; padding: 0;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16);
+  border-radius: 8px; cursor: pointer;
+  flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.sbk-burger span { display: block; width: 20px; height: 2px; background: #fff; border-radius: 2px; }
+.sbk-close {
+  display: none; align-self: flex-end;
+  background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.18);
+  width: 44px; height: 44px; border-radius: 8px; color: #fff; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+}
+
+/* Mobile: overlay menu */
+@media (max-width: 980px) {
+  .sbk-utility-inner { gap: 14px; font-size: 12.5px; }
+  .sbk-burger { display: inline-flex; }
+  .sbk-menu {
+    position: fixed; top: 0; right: 0;
+    width: min(420px, 90vw); height: 100vh; height: 100dvh; margin: 0;
+    background: color-mix(in srgb, var(--slate-color-text, #0b1c2c) 75%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%);
+    border-left: 1px solid rgba(255,255,255,.12);
+    box-shadow: -30px 0 80px -20px rgba(0,0,0,.55);
+    padding: 24px 26px 40px;
+    flex-direction: column; align-items: stretch;
+    transform: translateX(100%); transition: transform .35s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto;
+  }
+  .sbk-open .sbk-menu { transform: translateX(0); }
+  .sbk-close { display: inline-flex; margin-bottom: 22px; }
+  .sbk-menu-inner { flex-direction: column; align-items: stretch; gap: 4px; }
+  .sbk-menu a {
+    padding: 14px 16px; font-size: 15px; border-bottom: 1px solid rgba(255,255,255,.08); border-radius: 0;
+  }
+  .sbk-menu a:hover { background: rgba(255,255,255,.06); color: var(--slate-color-accent, #00c6ff); }
+  .sbk-menu a.sbk-nav-cta {
+    margin: 18px 0 0; text-align: center; border-bottom: 0; padding: 14px 22px;
+  }
+  /* Backdrop behind the side panel */
+  .sbk-open::after {
+    content: ""; position: fixed; inset: 0; z-index: -1;
+    background: rgba(0,0,0,.45); pointer-events: none;
+  }
+}
+@media (max-width: 560px) {
+  .sbk-utility { display: none; }
+}
+
+/* Push the regular page below the fixed header so heroes still fit. */
+.cb-public main.cb-page { padding-top: 0; }
+.cb-public > main.cb-page { scroll-margin-top: 110px; }
+/* Hide CB's old built-in site header AND footer on every page — we
+   render our own modern sticky header and multi-column footer. */
+.cb-public > header.cb-site-header,
+.cb-public > footer.cb-site-footer { display: none !important; }
+
+/* ──────────────────────────────────────────────────────────────
+ * GLOBAL FOOTER (.sbk-footer)
+ * ───────────────────────────────────────────────────────────── */
+.sbk-footer {
+  background: var(--slate-color-text, #0b1c2c);
+  color: rgba(255,255,255,.86);
+  font-family: var(--slate-font-sans, -apple-system, "Inter", sans-serif);
+  position: relative;
+}
+.sbk-footer::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .8;
+  background:
+    radial-gradient(60% 80% at 10% 0%, color-mix(in srgb, var(--slate-color-accent, #00c6ff) 12%, transparent), transparent 60%),
+    radial-gradient(40% 60% at 100% 100%, color-mix(in srgb, var(--slate-color-accent, #00c6ff) 8%, transparent), transparent 60%);
+}
+.sbk-footer-inner {
+  position: relative;
+  width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: clamp(64px, 8vw, 96px) clamp(20px, 4vw, 40px) clamp(40px, 5vw, 56px);
+  display: grid; gap: clamp(28px, 4vw, 52px);
+  grid-template-columns: 1.5fr 1fr 1fr 1.3fr;
+}
+@media (max-width: 980px) { .sbk-footer-inner { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .sbk-footer-inner { grid-template-columns: 1fr; gap: 32px; } }
+
+.sbk-footer .sbk-footer-h {
+  color: #fff; font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+  font-weight: var(--slate-font-weight-strong, 700); margin: 0 0 18px; font-family: var(--slate-font-sans);
+}
+.sbk-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.sbk-footer ul a, .sbk-footer ul li > span {
+  color: rgba(255,255,255,.84); text-decoration: none; font-size: 14.5px;
+  transition: color .15s;
+}
+.sbk-footer ul a:hover { color: var(--slate-color-accent, #00c6ff); }
+
+.sbk-footer-brand { display: flex; flex-direction: column; gap: 18px; }
+.sbk-footer-logo img { height: 46px; width: auto; filter: drop-shadow(0 4px 16px rgba(0,0,0,.4)); }
+.sbk-footer-brand-name { font-weight: var(--slate-font-weight-display, 800); font-size: 22px; color: #fff; letter-spacing: -.01em; font-family: var(--slate-font-heading); }
+.sbk-footer-about { margin: 0; color: rgba(255,255,255,.78); font-size: 14.5px; line-height: 1.65; max-width: 36ch; }
+.sbk-footer-social { display: flex; gap: 12px; margin-top: 4px; }
+.sbk-footer-social a {
+  width: 36px; height: 36px; display: inline-grid; place-items: center;
+  border-radius: 50%; color: rgba(255,255,255,.78);
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10);
+  transition: color .15s, background .15s, transform .15s;
+}
+.sbk-footer-social a:hover {
+  color: #fff; background: var(--slate-color-accent, #00c6ff); transform: translateY(-2px);
+  box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--slate-color-accent, #00c6ff) 60%, transparent);
+}
+
+.sbk-footer-contact ul li {
+  display: flex; align-items: flex-start; gap: 10px; line-height: 1.55;
+}
+.sbk-footer-ico {
+  width: 26px; height: 26px; border-radius: 50%; flex: none;
+  display: inline-grid; place-items: center; margin-top: 2px;
+  background: color-mix(in srgb, var(--slate-color-accent, #00c6ff) 18%, transparent);
+  color: var(--slate-color-accent, #00c6ff);
+}
+
+.sbk-footer-bottom {
+  position: relative;
+  border-top: 1px solid rgba(255,255,255,.08);
+  background: rgba(0,0,0,.18);
+}
+.sbk-footer-bottom-inner {
+  width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: 18px clamp(20px, 4vw, 40px);
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  font-size: 13px; color: rgba(255,255,255,.78);
+}
+.sbk-footer-bottom-inner a { color: rgba(255,255,255,.74); text-decoration: none; transition: color .15s; }
+.sbk-footer-bottom-inner a:hover { color: var(--slate-color-accent, #00c6ff); }
+@media (max-width: 560px) {
+  .sbk-footer-bottom-inner { flex-direction: column; align-items: flex-start; }
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * SUB-PAGE HERO (sb-page-hero)
+ *
+ * Compact hero with breadcrumb + heading + lede. Used for all
+ * pages other than the homepage so the fixed header still has
+ * something dark to sit on.
+ * ───────────────────────────────────────────────────────────── */
+.sb-page-hero {
+  position: relative; min-height: 56vh;
+  /* Section is full-bleed (no horizontal padding); inner mirrors the
+     header container so the heading aligns to the logo's left edge. */
+  padding: clamp(180px, 22vh, 240px) 0 clamp(56px, 8vw, 90px);
+  display: grid; align-items: end; color: #fff; overflow: hidden; isolation: isolate;
+  font-family: var(--slate-font-sans);
+}
+.sb-page-hero-bg { position: absolute; inset: 0; z-index: -2; background-size: cover; background-position: center; }
+.sb-page-hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(8,18,28,.78) 0%, rgba(8,18,28,.70) 50%, rgba(8,18,28,.92) 100%),
+    radial-gradient(80% 60% at 0% 100%, color-mix(in srgb, var(--slate-color-accent, #00c6ff) 25%, transparent), transparent 60%);
+}
+.sb-page-hero-inner {
+  width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 40px);
+}
+.sb-crumbs {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px; font-size: 14px; font-weight: var(--slate-font-weight-strong, 600); letter-spacing: .04em;
+}
+.sb-crumbs a { color: rgba(255,255,255,.78); text-decoration: none; transition: color .15s; }
+.sb-crumbs a:hover { color: var(--slate-color-accent, #00c6ff); }
+.sb-crumb-sep { color: var(--slate-color-accent, #00c6ff); }
+.sb-crumb-current { color: #fff; }
+.sb-page-hero h1 {
+  font-family: var(--slate-font-heading) !important;
+  font-size: var(--sbk-h1-size, clamp(36px, 5.8vw, 64px)); line-height: 1.05;
+  font-weight: var(--sbk-h1-weight, var(--slate-font-weight-display, 800));
+  letter-spacing: var(--slate-tracking-heading, -.025em);
+  margin: 0 0 18px; color: #fff !important; text-shadow: 0 2px 22px rgba(0,0,0,.32);
+  max-width: 880px; text-wrap: balance;
+}
+.sb-page-hero-lede {
+  font-family: var(--slate-font-sans);
+  font-size: clamp(15px, 1.4vw, 18px); color: rgba(255,255,255,.86);
+  margin: 0 0 22px; max-width: 60ch; line-height: 1.6;
+}
+.sb-page-hero-cta { margin-top: 6px; }
+
+/* ── HERO FEATURE STRIP — minimal "tagline" treatment ──
+ * Thin top divider, no chip backgrounds, no big icons.
+ * Just spaced phrases separated by hairline dividers, with a
+ * subtle accent index number prefix.
+ */
+.sb-hero-features {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4;
+  border-top: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.sb-hero-features-inner {
+  max-width: 1320px; margin: 0 auto;
+  padding: 14px clamp(20px, 4vw, 40px);
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0;
+}
+.sb-hero-feature {
+  display: inline-flex; align-items: center; gap: 14px;
+  color: rgba(255,255,255,.86);
+  font-family: var(--slate-font-sans);
+  font-size: 14.5px; font-weight: 500; letter-spacing: .01em;
+  padding: 8px clamp(20px, 3.2vw, 40px);
+  position: relative;
+}
+/* Hairline dividers between features (desktop only). */
+.sb-hero-feature + .sb-hero-feature::before {
+  content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 1px; height: 18px; background: rgba(255,255,255,.18);
+}
+.sb-hero-feature:first-child { padding-left: 0; }
+.sb-hero-feature:last-child  { padding-right: 0; }
+
+/* Hide the SVG chevron emitted by the block — replace with a small accent dot. */
+.sb-hero-feature-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex: none;
+  background: var(--slate-color-accent, #00c6ff);
+  display: inline-block;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--slate-color-accent, #00c6ff) 18%, transparent);
+}
+.sb-hero-feature-dot svg { display: none; }
+
+@media (max-width: 760px) {
+  .sb-hero-features-inner { padding: 10px clamp(16px, 4vw, 24px); gap: 4px; }
+  .sb-hero-feature { padding: 6px 14px 6px 0; }
+  .sb-hero-feature + .sb-hero-feature::before { display: none; }
+}
+
+/* ── FEATURE GRID (sb-feature-grid) ─────────────────────── */
+.sb-grid { display: grid; gap: clamp(18px, 2.4vw, 26px); }
+.sb-grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.sb-grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.sb-grid-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+@media (max-width: 960px) { .sb-grid-3, .sb-grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 620px) { .sb-grid-2, .sb-grid-3, .sb-grid-4 { grid-template-columns: minmax(0,1fr); } }
+
+.sb-card {
+  background: var(--slate-color-canvas); border: 1px solid var(--slate-color-border); border-radius: var(--slate-radius-lg);
+  padding: clamp(24px, 2.6vw, 34px);
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+  box-shadow: 0 2px 10px -2px color-mix(in srgb, var(--slate-color-text) 6%, transparent);
+}
+.sb-card:hover { transform: translateY(-6px); box-shadow: 0 18px 50px -20px color-mix(in srgb, var(--slate-color-text) 22%, transparent); border-color: color-mix(in srgb, var(--slate-color-accent) 35%, var(--slate-color-border)); }
+.sb-card-icon {
+  width: 54px; height: 54px; border-radius: 14px;
+  background: color-mix(in srgb, var(--slate-color-accent) 12%, transparent);
+  color: var(--slate-color-accent); display: grid; place-items: center; margin-bottom: 18px;
+}
+.sb-card-icon svg { width: 26px; height: 26px; }
+.sb-card h3 { font-size: 20px; line-height: 1.3; font-weight: var(--slate-font-weight-heading, 750); margin: 0 0 10px; color: var(--slate-color-text); font-family: var(--slate-font-heading); }
+.sb-card p { margin: 0 0 16px; color: var(--slate-color-text-muted); font-size: 15px; line-height: 1.6; }
+.sb-card-num { font-size: 13px; font-weight: var(--slate-font-weight-strong, 800); color: var(--slate-color-accent); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; }
+.sb-card-link { display: inline-flex; align-items: center; gap: 6px; font-weight: var(--slate-font-weight-strong, 700); font-size: 14.5px; color: var(--slate-color-accent); text-decoration: none; }
+.sb-card-link svg { width: 14px; height: 14px; transition: transform .2s; }
+.sb-card-link:hover svg { transform: translateX(3px); }
+
+/* Dark variant */
+.sb-bg-dark .sb-card { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.sb-bg-dark .sb-card:hover { background: rgba(255,255,255,.10); border-color: color-mix(in srgb, var(--slate-color-accent) 60%, transparent); }
+.sb-bg-dark .sb-card h3 { color: #fff; }
+.sb-bg-dark .sb-card p { color: rgba(255,255,255,.74); }
+
+/* ── SPLIT (sb-split: image + text) ─────────────────────── */
+.sb-split { display: grid; gap: clamp(28px, 5vw, 72px); align-items: center; grid-template-columns: 1.1fr 1fr; }
+.sb-split.sb-split-r { grid-template-columns: 1fr 1.1fr; }
+.sb-split.sb-split-r .sb-split-media { order: 2; }
+@media (max-width: 880px) { .sb-split, .sb-split.sb-split-r { grid-template-columns: 1fr; } .sb-split.sb-split-r .sb-split-media { order: 0; } }
+.sb-split-media { position: relative; }
+.sb-split-media img { width: 100%; min-height: 360px; max-height: 560px; object-fit: cover; border-radius: var(--slate-radius-lg); box-shadow: 0 18px 50px -20px rgba(11,28,44,.20); }
+.sb-split-body h2 { font-size: clamp(28px, 3.6vw, 40px); margin: 14px 0 16px; }
+.sb-split-body p { font-size: 16.5px; color: var(--slate-color-text-muted); line-height: 1.7; margin: 0 0 18px; }
+
+/* ── QUOTE GRID (sb-quote-grid) ─────────────────────────── */
+.sb-quote {
+  background: var(--slate-color-canvas); border: 1px solid var(--slate-color-border); border-radius: var(--slate-radius-lg);
+  padding: clamp(28px, 3vw, 40px);
+  position: relative; transition: transform .25s, box-shadow .25s;
+  box-shadow: 0 2px 10px -2px color-mix(in srgb, var(--slate-color-text) 6%, transparent);
+}
+.sb-quote:hover { transform: translateY(-4px); box-shadow: 0 18px 50px -20px color-mix(in srgb, var(--slate-color-text) 22%, transparent); }
+.sb-quote::before {
+  content: "\201C"; position: absolute; top: 14px; left: 22px;
+  font-size: 90px; line-height: 1; font-family: Georgia, serif;
+  color: var(--slate-color-accent); opacity: .22;
+}
+.sb-quote-stars { color: var(--slate-color-accent); letter-spacing: 3px; font-size: 16px; margin-bottom: 12px; position: relative; }
+.sb-quote p { position: relative; font-size: 16.5px; line-height: 1.65; color: var(--slate-color-text-secondary); margin: 0 0 22px; font-weight: 500; }
+.sb-quote-author { display: flex; align-items: center; gap: 14px; }
+.sb-quote-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--slate-color-accent), var(--slate-color-accent-secondary));
+  color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 16px;
+}
+.sb-quote-name { font-weight: var(--slate-font-weight-strong, 700); font-size: 15px; color: var(--slate-color-text); }
+.sb-quote-meta { font-size: 13px; color: var(--slate-color-text-muted); margin-top: 1px; }
+
+/* Stats strip above quotes */
+.sb-stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; max-width: 900px; margin: 0 auto 56px; }
+@media (max-width: 720px) { .sb-stats { grid-template-columns: repeat(2, 1fr); } }
+.sb-stat { text-align: center; padding: 22px 18px; background: var(--slate-color-canvas); border: 1px solid var(--slate-color-border); border-radius: var(--slate-radius-md); box-shadow: 0 2px 10px -2px color-mix(in srgb, var(--slate-color-text) 6%, transparent); }
+.sb-stat strong { display: block; font-size: clamp(22px, 3.2vw, 34px); font-weight: var(--slate-font-weight-display, 800); color: var(--slate-color-accent); letter-spacing: -.02em; line-height: 1.1; white-space: nowrap; font-family: var(--slate-font-heading); }
+.sb-stat strong.sb-stat-text { font-size: clamp(16px, 2.2vw, 22px); letter-spacing: .02em; }
+.sb-stat span { display: block; font-size: 12px; color: var(--slate-color-text-muted); font-weight: var(--slate-font-weight-strong, 600); letter-spacing: .04em; text-transform: uppercase; margin-top: 6px; }
+
+/* ── CTA BAND (sb-cta-band) ─────────────────────────────── */
+.sb-ctaband {
+  /* Horizontal gutter comes from .sb-ctaband-inner (shared container
+     rule) — NOT the section — so the CTA aligns with every other block. */
+  position: relative; padding: clamp(56px, 8vw, 96px) 0;
+  background: linear-gradient(135deg, var(--slate-color-text) 0%, var(--slate-color-text-secondary) 60%, color-mix(in srgb, var(--slate-color-text) 80%, var(--slate-color-accent)) 100%);
+  color: #fff; overflow: hidden;
+}
+.sb-ctaband::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(60% 80% at 20% 0%, color-mix(in srgb, var(--slate-color-accent) 30%, transparent), transparent 60%),
+              radial-gradient(50% 70% at 100% 100%, color-mix(in srgb, var(--slate-color-accent) 22%, transparent), transparent 60%);
+}
+/* Flex column + align-items:center guarantees the heading, sub-text and
+   button all sit dead-centre on every device — regardless of the per-element
+   `margin: 0 0 X` rules below (which otherwise pin the block to the left). */
+.sb-ctaband-inner { position: relative; width: 100%; max-width: 1320px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.sb-ctaband-inner > * { max-width: 900px; margin-left: auto; margin-right: auto; }
+.sb-ctaband h2 { font-size: clamp(28px, 4vw, 44px); margin: 0 0 14px; color: #fff; }
+.sb-ctaband p { color: rgba(255,255,255,.8); font-size: 17px; margin: 0 0 28px; }
+
+/* ── CONTACT GRID (sb-contact-grid) ─────────────────────── */
+.sb-contact-grid { display: grid; gap: 26px; grid-template-columns: repeat(3, minmax(0,1fr)); }
+@media (max-width: 880px) { .sb-contact-grid { grid-template-columns: 1fr; } }
+.sb-contact-card {
+  background: var(--slate-color-canvas); border: 1px solid var(--slate-color-border); border-radius: var(--slate-radius-lg);
+  padding: clamp(24px, 2.6vw, 34px);
+  box-shadow: 0 2px 10px -2px color-mix(in srgb, var(--slate-color-text) 6%, transparent);
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+.sb-contact-card:hover { transform: translateY(-4px); box-shadow: 0 18px 50px -20px color-mix(in srgb, var(--slate-color-text) 22%, transparent); border-color: color-mix(in srgb, var(--slate-color-accent) 35%, var(--slate-color-border)); }
+.sb-contact-card .sb-card-icon { margin-bottom: 16px; }
+.sb-contact-card h3 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; font-weight: var(--slate-font-weight-strong, 700); color: var(--slate-color-text-muted); margin: 0 0 8px; font-family: var(--slate-font-sans); }
+.sb-contact-card p { margin: 0; font-size: 17px; font-weight: var(--slate-font-weight-strong, 600); color: var(--slate-color-text); line-height: 1.5; }
+.sb-contact-card a { color: var(--slate-color-text); text-decoration: none; }
+.sb-contact-card a:hover { color: var(--slate-color-accent); }
+
+/* ── SURVEY FORM TABS (sb-survey-tabs) ──────────────────── */
+.sb-formtabs { max-width: 1040px; margin: 0 auto; }
+.sb-formtabs-nav {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px;
+}
+.sb-formtab {
+  display: flex; align-items: center; gap: 14px; text-align: left; cursor: pointer;
+  background: var(--slate-color-canvas); border: 1.5px solid var(--slate-color-border); border-radius: var(--slate-radius-lg);
+  padding: 16px 20px; font-family: var(--slate-font-sans); color: var(--slate-color-text);
+  transition: border-color .2s, box-shadow .2s, background .2s, transform .2s;
+  box-shadow: 0 2px 10px -4px color-mix(in srgb, var(--slate-color-text) 8%, transparent);
+}
+.sb-formtab:hover { border-color: color-mix(in srgb, var(--slate-color-accent) 45%, var(--slate-color-border)); transform: translateY(-2px); }
+.sb-formtab.is-active {
+  border-color: var(--slate-color-accent);
+  box-shadow: 0 14px 34px -16px color-mix(in srgb, var(--slate-color-accent) 60%, transparent);
+  background: color-mix(in srgb, var(--slate-color-accent) 6%, var(--slate-color-canvas));
+}
+.sb-formtab-ico {
+  width: 46px; height: 46px; flex: none; border-radius: 12px; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--slate-color-accent) 14%, transparent); color: var(--slate-color-accent);
+  transition: background .2s, color .2s;
+}
+.sb-formtab.is-active .sb-formtab-ico { background: var(--slate-color-accent); color: #fff; }
+.sb-formtab-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sb-formtab-txt strong { font-size: 16px; font-weight: var(--slate-font-weight-heading, 700); font-family: var(--slate-font-heading); letter-spacing: -.01em; }
+.sb-formtab-txt span { font-size: 13px; color: var(--slate-color-text-muted); line-height: 1.4; }
+.sb-formtab-panel {
+  background: var(--slate-color-canvas); border: 1px solid var(--slate-color-border); border-radius: var(--slate-radius-lg);
+  padding: clamp(18px, 2.2vw, 34px); overflow: hidden;
+  box-shadow: 0 18px 50px -28px color-mix(in srgb, var(--slate-color-text) 22%, transparent);
+}
+.sb-formtab-panel[hidden] { display: none; }
+.sb-formtab-frame { width: 100%; border: 0; display: block; transition: height .15s ease; }
+.sb-formtab-empty { padding: 40px; text-align: center; color: var(--slate-color-text-muted); }
+@media (max-width: 620px) { .sb-formtabs-nav { grid-template-columns: 1fr; } }
+
+/* ── CONTACT PANEL (sb-contact-panel) ───────────────────── */
+.sb-cpanel {
+  display: grid; grid-template-columns: 1.12fr 0.88fr; gap: clamp(20px, 2.6vw, 30px);
+  align-items: start; /* form keeps its natural height (never padded) */
+}
+@media (max-width: 900px) { .sb-cpanel { grid-template-columns: 1fr; } }
+
+/* Form card = header + iframe, natural height (no stretch → no gap below submit). */
+.sb-cpanel-form { padding: clamp(22px, 2.4vw, 32px); display: flex; flex-direction: column; }
+/* Only the map stretches, filling down to the form's height. */
+.sb-cpanel-map { align-self: stretch; }
+.sb-cpanel-formhead { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+.sb-cpanel-formico {
+  width: 48px; height: 48px; flex: none; border-radius: 50%; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--slate-color-accent) 14%, transparent); color: var(--slate-color-accent);
+}
+.sb-cpanel-formhead h3 { margin: 0; font-size: 20px; font-weight: var(--slate-font-weight-heading, 700); color: var(--slate-color-text); font-family: var(--slate-font-heading); line-height: 1.2; }
+.sb-cpanel-formhead p { margin: 2px 0 0; font-size: 14px; color: var(--slate-color-text-muted); }
+.sb-cform-frame { width: 100%; border: 0; display: block; margin-top: 10px; transition: height .15s ease; }
+
+/* Info cards spread evenly to fill the form's height — no single big gap. */
+.sb-cpanel-side { display: flex; flex-direction: column; justify-content: space-between; gap: clamp(14px, 1.8vw, 18px); height: 100%; }
+@media (max-width: 900px) { .sb-cpanel-side { justify-content: flex-start; } }
+.sb-cpanel-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 460px) { .sb-cpanel-cards { grid-template-columns: 1fr; } }
+.sb-cpanel-info { display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px; }
+.sb-cpanel-info .sb-card-icon { width: 42px; height: 42px; margin: 0; flex: none; border-radius: 12px; }
+.sb-cpanel-info .sb-card-icon svg { width: 20px; height: 20px; }
+.sb-cpanel-info-l { display: block; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; font-weight: var(--slate-font-weight-strong, 700); color: var(--slate-color-text-muted); margin-bottom: 3px; }
+.sb-cpanel-info a, .sb-cpanel-info strong { color: var(--slate-color-text); text-decoration: none; font-weight: var(--slate-font-weight-strong, 700); font-size: 16px; }
+.sb-cpanel-info a:hover { color: var(--slate-color-accent); }
+.sb-cpanel-addr p { margin: 4px 0 0; color: var(--slate-color-text-muted); font-size: 14px; line-height: 1.5; font-weight: 500; }
+
+/* Contact-info cards: a 3-across row above the form + map. */
+.sb-cpanel-inforow {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(14px, 1.6vw, 18px); margin-bottom: clamp(18px, 2vw, 24px); align-items: stretch;
+}
+@media (max-width: 760px) { .sb-cpanel-inforow { grid-template-columns: 1fr; } }
+
+/* Service-area map card sits beside the form and fills to its height. */
+.sb-cpanel-map { padding: clamp(16px, 1.8vw, 22px); display: flex; flex-direction: column; }
+.sb-cpanel-map-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.sb-cpanel-map-head .sb-card-icon { width: 36px; height: 36px; margin: 0; flex: none; border-radius: 10px; }
+.sb-cpanel-map-head .sb-card-icon svg { width: 18px; height: 18px; }
+.sb-cpanel-map-head h3 { margin: 0; font-size: 18px; font-weight: var(--slate-font-weight-heading, 700); color: var(--slate-color-text); font-family: var(--slate-font-heading); }
+.sb-cpanel-map-note { margin: 0 0 14px; font-size: 14px; color: var(--slate-color-text-muted); line-height: 1.5; }
+.sb-cpanel-map-canvas {
+  flex: 1 1 auto; min-height: 240px; border-radius: var(--slate-radius-md); overflow: hidden;
+  display: flex; align-items: center; justify-content: center; background: #eef4fb;
+}
+.sb-cpanel-map-canvas img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sb-cpanel-svgmap { width: 100%; height: 100%; display: block; }
+
+.sb-cpanel-badges {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 26px;
+  margin-top: clamp(24px, 3vw, 38px); padding-top: 22px;
+  border-top: 1px solid var(--slate-color-border);
+}
+.sb-cpanel-badges span { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: var(--slate-font-weight-strong, 600); color: var(--slate-color-text-secondary, var(--slate-color-text)); }
+.sb-cpanel-badges svg { color: var(--slate-color-accent); }
+
+/* ════════════════════════════════════════════════════════════════════
+ * HARD OVERRIDES — must come last.
+ *
+ * CB's public.css is inlined *after* sb.css in <head>, so its single-
+ * class rules like `.cb-public h1, h2, h3 { font-family: <heading-font
+ * heading, Georgia, serif); line-height: 1.18 }` win on same-specificity
+ * ties. The block below uses high-specificity selectors + !important to
+ * guarantee SBK heading styles always paint, regardless of CB's cascade.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.cb-public .sb h1, .cb-public .sb h2, .cb-public .sb h3,
+.cb-public .sb-hero h1, .cb-public .sb-page-hero h1,
+.cb-public .sb-split-body h2, .cb-public .sb-card h3,
+.cb-public .sb-ctaband h2, .cb-public .sbk-footer-h,
+.cb-public .sbk-brand-name, .cb-public .sbk-footer-brand-name {
+  font-family: var(--slate-font-heading, 'Jost', 'Century Gothic', system-ui, sans-serif) !important;
+  line-height: 1.1 !important;
+}
+.cb-public .sb h2 { line-height: 1.15 !important; }
+.cb-public .sb-card h3, .cb-public .sb-contact-card h3 { line-height: 1.3 !important; }
+.cb-public .sb-hero h1 em,
+.cb-public .sb-page-hero h1 em,
+.cb-public .sb h2 em {
+  font-style: normal !important;
+  color: var(--slate-color-accent, #00c6ff) !important;
+}
+
+/* Universal heading container width — only constrain inside hero contexts. */
+.cb-public .sb-hero h1 { max-width: 880px !important; }
+.cb-public .sb-page-hero h1 { max-width: 880px !important; }
+
+/* Visual-edge alignment: the heading font is now Jost (a geometric sans),
+   whose capital sidebearing closely matches the logo/phone glyphs — so no
+   serif overhang compensation is needed. Keep text-indent/padding zeroed and
+   the inline-start margin neutral so the heading's leftmost ink aligns with
+   the container edge (and the logo) rather than poking past it. */
+/* Only the LEFT-aligned hero (and sub-page hero, always left) pins its H1 to
+   the container edge. A CENTER-aligned hero must keep its `margin: auto` so the
+   heading centers with the lede/buttons — hence scoping to .sb-hero-left. */
+.cb-public .sb-hero-left h1,
+.cb-public .sb-page-hero h1 {
+  text-indent: 0 !important;
+  padding-inline-start: 0 !important;
+  margin-inline-start: 0 !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * CONTAINER STANDARDIZATION — the single alignment guarantee.
+ *
+ * Every inner wrapper on the page gets the SAME box model so its content
+ * column is exactly --sbk-container (1320px) wide, centered, with an
+ * identical --sbk-gutter on each side. Content-box vs border-box no longer
+ * matters: box-sizing is forced to border-box and max-width includes the
+ * gutters, so the *content* width is always 1320px — header, heroes, body
+ * sections, CTA band and footer all share one left/right edge as you scroll.
+ * ════════════════════════════════════════════════════════════════════ */
+.cb-public .sbk-utility-inner,
+.cb-public .sbk-mainnav-inner,
+.cb-public .sb-hero-inner,
+.cb-public .sb-page-hero-inner,
+.cb-public .sb-inner,
+.cb-public .sb-ctaband-inner,
+.cb-public .sbk-footer-inner,
+.cb-public .sbk-footer-bottom-inner,
+.cb-public .sb-hero-features-inner {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: calc(var(--sbk-container, 1320px) + 2 * var(--sbk-gutter, clamp(20px, 4vw, 40px))) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: var(--sbk-gutter, clamp(20px, 4vw, 40px)) !important;
+  padding-right: var(--sbk-gutter, clamp(20px, 4vw, 40px)) !important;
+}
+
+/* SBK build marker — bump this when you change anything visible so you can
+   confirm in DevTools that your hard refresh actually picked up the new CSS. */
+/* ────────────────────────────────────────────────────────────
+ * 404 fallback hero (sb-page-hero with no bg image).
+ * The bg-image is omitted on 404; supply a soft gradient panel
+ * so the page still feels intentional, not blank.
+ * ──────────────────────────────────────────────────────────── */
+.cb-public .sb-page-hero .sb-page-hero-bg:empty,
+.cb-public .sb-page-hero .sb-page-hero-bg:not([style]) {
+  background:
+    radial-gradient(80% 60% at 50% 0%, color-mix(in srgb, var(--slate-color-accent, #00c6ff) 28%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--slate-color-text, #0b1c2c), var(--slate-color-text-secondary, #1a2f44));
+}
+
+/* Universal serif on EVERY visible heading inside an SBK section, no
+   matter which block emitted it. Uses :where to keep specificity low
+   so themes can still override via more-specific selectors. */
+.cb-public :where(.sb, .sb-page-hero, .sb-hero, .sbk-footer) h1,
+.cb-public :where(.sb, .sb-page-hero, .sb-hero, .sbk-footer) h2,
+.cb-public :where(.sb, .sb-page-hero, .sb-hero, .sbk-footer) h3,
+.cb-public :where(.sb, .sb-page-hero, .sb-hero, .sbk-footer) h4 {
+  font-family: var(--slate-font-heading, 'Jost', 'Century Gothic', system-ui, sans-serif) !important;
+}
+
+/* Right-edge alignment for body sections: feature-grid headings, split
+   bodies, CTA-band headings — anything inside .sb-inner — naturally fills
+   the container, so they already align with the header's right edge.
+   Hero h1 still capped at 880px because longer lines hurt readability,
+   but its left edge is now ink-aligned with the logo (see margin-inline-
+   start above). */
+
+/* SBK-CSS-BUILD: 2026-07-26.14 — per-element hero size/weight controls (CSS vars) */

@@ -1,0 +1,403 @@
+<!-- cb-design: label="Smokehouse — Restaurant"; category="Designer pages" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chef Gregory's BBQ — Low &amp; Slow Smokehouse</title>
+<meta name="description" content="Wood-fired Texas-style barbecue, smoked 14 hours over post oak. Brisket, ribs, and house sides in the heart of the city. Walk-ins welcome, reservations recommended.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0c0b0a; --ink-2:#141210; --ink-3:#1d1a17;
+  --cream:#f6efe6; --cream-dim:#cabfb1; --muted:#8d8377;
+  --ember:#ff6a2b; --ember-2:#ff944d; --amber:#f5b53d; --gold:#e8c98a;
+  --line:rgba(246,239,230,.10); --line-2:rgba(246,239,230,.18);
+  --maxw:1180px;
+  --font-d:"Bricolage Grotesque",sans-serif; --font-b:"Inter",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-b); background:var(--ink); color:var(--cream);
+  line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,5vw,40px)}
+.eyebrow{
+  font-family:var(--font-b);font-weight:600;font-size:.75rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--ember-2);display:inline-flex;align-items:center;gap:.6rem;
+}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--ember)}
+h1,h2,h3{font-family:var(--font-d);font-weight:700;line-height:1.04;letter-spacing:-.02em}
+.btn{
+  display:inline-flex;align-items:center;gap:.55rem;font-weight:600;font-size:.95rem;
+  padding:.85rem 1.5rem;border-radius:100px;border:1px solid transparent;cursor:pointer;
+  transition:transform .25s ease,box-shadow .25s ease,background .25s ease,border-color .25s;
+}
+.btn-primary{background:linear-gradient(135deg,var(--ember),var(--amber));color:#1a0f06;box-shadow:0 10px 30px -8px rgba(255,106,43,.55)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px -8px rgba(255,106,43,.7)}
+.btn-ghost{border-color:var(--line-2);color:var(--cream)}
+.btn-ghost:hover{border-color:var(--ember);color:var(--ember-2);transform:translateY(-2px)}
+
+/* ---------- NAV ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,backdrop-filter .3s,border-color .3s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(12,11,10,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:74px}
+.logo{font-family:var(--font-d);font-weight:800;font-size:1.25rem;letter-spacing:-.02em;display:flex;align-items:center;gap:.55rem}
+.logo .mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--ember),var(--amber));display:grid;place-items:center;color:#1a0f06;font-size:1rem}
+.nav-links{display:flex;gap:2.2rem;align-items:center}
+.nav-links a{font-size:.92rem;color:var(--cream-dim);transition:color .2s}
+.nav-links a:hover{color:var(--cream)}
+.nav-cta{display:flex;align-items:center;gap:1rem}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px}
+.burger span{width:24px;height:2px;background:var(--cream);border-radius:2px;transition:.3s}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding-top:74px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(120% 90% at 80% 0%,rgba(255,106,43,.28),transparent 55%),
+    radial-gradient(90% 70% at 10% 100%,rgba(245,181,61,.16),transparent 60%),
+    linear-gradient(180deg,#161210 0%,#0c0b0a 70%);
+}
+.hero-bg::after{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(246,239,230,.05) 1px,transparent 1px);background-size:22px 22px;mask:linear-gradient(180deg,#000,transparent 80%)}
+.hero-in{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;width:100%}
+.hero h1{font-size:clamp(2.9rem,7vw,5.4rem);margin:1.3rem 0 1.1rem}
+.hero h1 em{font-style:normal;background:linear-gradient(120deg,var(--ember),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:clamp(1.05rem,1.6vw,1.25rem);color:var(--cream-dim);max-width:30ch}
+.hero-actions{display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap}
+.trust{display:flex;align-items:center;gap:1.4rem;margin-top:2.6rem;flex-wrap:wrap}
+.stars{color:var(--amber);letter-spacing:2px}
+.trust small{color:var(--muted);font-size:.85rem}
+/* hero visual card */
+.hero-card{position:relative;aspect-ratio:4/5;border-radius:24px;overflow:hidden;border:1px solid var(--line-2);
+  background:
+    radial-gradient(80% 60% at 50% 10%,rgba(255,106,43,.35),transparent 60%),
+    linear-gradient(160deg,#2a1d14,#120d0a);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.8);
+}
+.hero-card::before{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle at 50% 38%,rgba(245,181,61,.5),transparent 38%),
+  conic-gradient(from 200deg at 50% 70%,rgba(255,106,43,.25),transparent 40%);
+  mix-blend-mode:screen}
+.hero-card .smoke{position:absolute;inset:0;background:radial-gradient(60% 40% at 50% 75%,rgba(246,239,230,.08),transparent 70%)}
+.hero-card .badge{position:absolute;left:20px;top:20px;background:rgba(12,11,10,.6);backdrop-filter:blur(8px);
+  border:1px solid var(--line-2);border-radius:100px;padding:.5rem 1rem;font-size:.78rem;font-weight:600;letter-spacing:.04em}
+.hero-card .plate{position:absolute;left:24px;right:24px;bottom:24px;background:rgba(12,11,10,.55);backdrop-filter:blur(10px);
+  border:1px solid var(--line-2);border-radius:16px;padding:1.1rem 1.3rem;display:flex;justify-content:space-between;align-items:center}
+.hero-card .plate b{font-family:var(--font-d);font-size:1.05rem}
+.hero-card .plate span{color:var(--cream-dim);font-size:.82rem}
+.hero-card .price{font-family:var(--font-d);font-size:1.4rem;color:var(--amber)}
+
+/* ---------- MARQUEE STRIP ---------- */
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--ink-2);overflow:hidden}
+.strip-track{display:flex;gap:3.5rem;padding:1.1rem 0;white-space:nowrap;animation:scroll 28s linear infinite;width:max-content}
+.strip-track span{font-family:var(--font-d);font-size:1.1rem;color:var(--cream-dim);display:inline-flex;align-items:center;gap:1rem}
+.strip-track span::after{content:"●";color:var(--ember);font-size:.5rem}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* ---------- SECTION SHELL ---------- */
+section{position:relative}
+.sec{padding:clamp(72px,10vw,128px) 0}
+.sec-head{max-width:640px;margin-bottom:3.5rem}
+.sec-head h2{font-size:clamp(2rem,4.5vw,3.2rem);margin:1rem 0 1rem}
+.sec-head p{color:var(--cream-dim);font-size:1.08rem}
+.sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.sec-head.center .eyebrow{justify-content:center}
+
+/* ---------- ABOUT SPLIT ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+.about-visual{aspect-ratio:1/1;border-radius:24px;border:1px solid var(--line-2);position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#241913,#0f0b09)}
+.about-visual .ring{position:absolute;inset:0;background:
+  repeating-radial-gradient(circle at 50% 50%,transparent 0 26px,rgba(255,106,43,.10) 26px 27px)}
+.about-visual .core{position:absolute;inset:0;display:grid;place-items:center}
+.about-visual .core div{text-align:center}
+.about-visual .core .big{font-family:var(--font-d);font-size:clamp(3rem,8vw,5rem);background:linear-gradient(120deg,var(--ember),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.about-visual .core small{color:var(--cream-dim);letter-spacing:.2em;text-transform:uppercase;font-size:.78rem}
+.about-copy h2{font-size:clamp(2rem,4vw,2.8rem);margin:1rem 0 1.2rem}
+.about-copy p{color:var(--cream-dim);margin-bottom:1.1rem}
+.about-feats{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2rem}
+.feat{padding:1.2rem;border:1px solid var(--line);border-radius:14px;background:var(--ink-2)}
+.feat .ic{width:38px;height:38px;border-radius:10px;background:rgba(255,106,43,.14);color:var(--ember-2);display:grid;place-items:center;font-size:1.1rem;margin-bottom:.7rem}
+.feat b{font-family:var(--font-d);display:block;margin-bottom:.2rem}
+.feat span{font-size:.88rem;color:var(--muted)}
+
+/* ---------- MENU ---------- */
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+.dish{position:relative;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--ink-2);transition:transform .3s,border-color .3s}
+.dish:hover{transform:translateY(-6px);border-color:var(--line-2)}
+.dish .pic{aspect-ratio:16/11;position:relative;background:linear-gradient(160deg,#2a1c13,#120d0a)}
+.dish:nth-child(2) .pic{background:linear-gradient(160deg,#2c2113,#120d0a)}
+.dish:nth-child(3) .pic{background:linear-gradient(160deg,#291a12,#0f0b09)}
+.dish:nth-child(4) .pic{background:linear-gradient(160deg,#241a14,#120d0a)}
+.dish:nth-child(5) .pic{background:linear-gradient(160deg,#2b1d12,#0f0b09)}
+.dish:nth-child(6) .pic{background:linear-gradient(160deg,#261c13,#120d0a)}
+.dish .pic::after{content:"";position:absolute;inset:0;background:radial-gradient(70% 60% at 50% 25%,rgba(245,181,61,.22),transparent 60%)}
+.dish .pic .tag{position:absolute;top:14px;left:14px;z-index:2;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(12,11,10,.6);border:1px solid var(--line-2);padding:.35rem .7rem;border-radius:100px;color:var(--amber)}
+.dish .body{padding:1.3rem}
+.dish .body .row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+.dish .body h3{font-size:1.2rem}
+.dish .body .p{font-family:var(--font-d);color:var(--amber);font-size:1.2rem;white-space:nowrap}
+.dish .body p{color:var(--muted);font-size:.9rem;margin-top:.5rem}
+
+/* ---------- GALLERY ---------- */
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:170px;gap:1rem}
+.gtile{border-radius:16px;border:1px solid var(--line);position:relative;overflow:hidden;background:linear-gradient(160deg,#241913,#0e0a08)}
+.gtile::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 50% 30%,rgba(255,106,43,.18),transparent 65%)}
+.gtile.tall{grid-row:span 2}
+.gtile.wide{grid-column:span 2}
+.gtile .lbl{position:absolute;left:14px;bottom:12px;z-index:2;font-family:var(--font-d);font-size:.95rem;color:var(--cream)}
+
+/* ---------- TESTIMONIALS ---------- */
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+.quote{padding:1.8rem;border:1px solid var(--line);border-radius:18px;background:var(--ink-2)}
+.quote .stars{margin-bottom:1rem;display:block}
+.quote p{color:var(--cream);font-size:1rem;margin-bottom:1.4rem}
+.quote .who{display:flex;align-items:center;gap:.8rem}
+.quote .av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--ember),var(--amber));display:grid;place-items:center;color:#1a0f06;font-weight:700;font-family:var(--font-d)}
+.quote .who b{font-family:var(--font-d);display:block;font-size:.95rem}
+.quote .who span{color:var(--muted);font-size:.82rem}
+
+/* ---------- VISIT / CTA ---------- */
+.visit{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,4rem);align-items:center;
+  border:1px solid var(--line-2);border-radius:28px;padding:clamp(2rem,5vw,3.5rem);
+  background:radial-gradient(100% 120% at 0% 0%,rgba(255,106,43,.16),transparent 55%),var(--ink-2)}
+.visit h2{font-size:clamp(2rem,4vw,3rem);margin:1rem 0 1rem}
+.visit p{color:var(--cream-dim);margin-bottom:1.6rem}
+.hours{list-style:none;border-top:1px solid var(--line)}
+.hours li{display:flex;justify-content:space-between;padding:.8rem 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.hours li span:first-child{color:var(--cream-dim)}
+.hours li b{font-family:var(--font-d);color:var(--cream)}
+.hours li.open b{color:var(--ember-2)}
+
+/* ---------- FOOTER ---------- */
+footer{border-top:1px solid var(--line);background:var(--ink-2);padding:clamp(48px,7vw,80px) 0 32px}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2rem;margin-bottom:3rem}
+.foot-grid p{color:var(--muted);font-size:.9rem;margin-top:1rem;max-width:34ch}
+.foot-col h4{font-family:var(--font-d);font-size:.95rem;margin-bottom:1rem}
+.foot-col a{display:block;color:var(--cream-dim);font-size:.9rem;padding:.3rem 0;transition:color .2s}
+.foot-col a:hover{color:var(--ember-2)}
+.foot-bot{display:flex;justify-content:space-between;align-items:center;padding-top:1.6rem;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem;flex-wrap:wrap;gap:1rem}
+
+/* ---------- REVEAL ANIM ---------- */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:960px){
+  .hero-in,.split,.visit{grid-template-columns:1fr}
+  .hero-card{max-width:420px;margin:0 auto;order:-1}
+  .menu-grid,.quotes{grid-template-columns:1fr 1fr}
+  .gallery{grid-template-columns:repeat(2,1fr)}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .nav-links{position:fixed;inset:74px 0 auto 0;flex-direction:column;background:rgba(12,11,10,.97);
+    backdrop-filter:blur(14px);padding:1.5rem 0;gap:0;border-bottom:1px solid var(--line);
+    transform:translateY(-130%);transition:transform .35s;height:auto}
+  .nav-links.open{transform:none}
+  .nav-links a{padding:.9rem 0}
+  .burger{display:flex}
+  .nav .nav-cta .btn{display:none}
+  .menu-grid,.quotes,.about-feats,.foot-grid{grid-template-columns:1fr}
+  .about-feats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="logo"><span class="mark">🔥</span> Chef Gregory's</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#story">Story</a>
+      <a href="#menu">Menu</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#visit">Visit</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#visit" class="btn btn-primary">Reserve a Table</a>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="wrap hero-in">
+    <div class="reveal in">
+      <span class="eyebrow">Texas-style smokehouse · Est. 2009</span>
+      <h1>Low &amp; slow.<br><em>Smoked 14 hours</em><br>over post oak.</h1>
+      <p class="lead">Brisket with a black-pepper bark, ribs that pull clean, and sides made from scratch every morning. This is barbecue worth the wait.</p>
+      <div class="hero-actions">
+        <a href="#menu" class="btn btn-primary">View the Menu →</a>
+        <a href="#visit" class="btn btn-ghost">Find Us</a>
+      </div>
+      <div class="trust">
+        <div><span class="stars">★★★★★</span></div>
+        <small>4.9 / 5 · 2,400+ reviews · Voted #1 BBQ in the city</small>
+      </div>
+    </div>
+    <div class="hero-card reveal in">
+      <span class="smoke"></span>
+      <span class="badge">🔥 Pit-fired daily from 6am</span>
+      <div class="plate">
+        <div><b>The Brisket Plate</b><br><span>½ lb brisket · 2 sides · pickles</span></div>
+        <div class="price">$24</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="strip-track">
+    <span>Post Oak Smoked</span><span>House-Made Sauces</span><span>USDA Prime Brisket</span><span>Scratch Sides</span><span>Craft Beer on Tap</span><span>Catering Available</span>
+    <span>Post Oak Smoked</span><span>House-Made Sauces</span><span>USDA Prime Brisket</span><span>Scratch Sides</span><span>Craft Beer on Tap</span><span>Catering Available</span>
+  </div>
+</div>
+
+<!-- STORY -->
+<section class="sec" id="story">
+  <div class="wrap split">
+    <div class="about-visual reveal">
+      <div class="ring"></div>
+      <div class="core"><div><div class="big">14h</div><small>In the pit</small></div></div>
+    </div>
+    <div class="about-copy reveal">
+      <span class="eyebrow">Our story</span>
+      <h2>One pit. One obsession. Zero shortcuts.</h2>
+      <p>Chef Gregory built his first offset smoker in a backyard in 2009. Fifteen years later we still run on the same principle: real wood, real time, and meat we'd be proud to serve our own family.</p>
+      <p>No gas assist, no liquid smoke, no rushing. Just post oak, a thermometer, and the patience to wait until it's right.</p>
+      <div class="about-feats">
+        <div class="feat"><div class="ic">🪵</div><b>Real wood fire</b><span>Post oak &amp; hickory only</span></div>
+        <div class="feat"><div class="ic">🌅</div><b>Smoked overnight</b><span>Pits lit at 4am daily</span></div>
+        <div class="feat"><div class="ic">🥩</div><b>Prime cuts</b><span>USDA Prime, hand-trimmed</span></div>
+        <div class="feat"><div class="ic">🍃</div><b>Scratch kitchen</b><span>Sides &amp; sauces in-house</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="sec" id="menu" style="background:var(--ink-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">The board</span>
+      <h2>Signature plates</h2>
+      <p>Sold by the pound or as a plate with two scratch-made sides. When it's gone, it's gone — get here early.</p>
+    </div>
+    <div class="menu-grid">
+      <article class="dish reveal"><div class="pic"><span class="tag">Best seller</span></div><div class="body"><div class="row"><h3>Brisket</h3><span class="p">$24</span></div><p>Black-pepper bark, smoke ring for days, pencil-thick slices.</p></div></article>
+      <article class="dish reveal"><div class="pic"><span class="tag">Fan favorite</span></div><div class="body"><div class="row"><h3>Pork Ribs</h3><span class="p">$22</span></div><p>St. Louis cut, glazed and pull-clean tender. Half or full rack.</p></div></article>
+      <article class="dish reveal"><div class="pic"><span class="tag">House</span></div><div class="body"><div class="row"><h3>Pulled Pork</h3><span class="p">$18</span></div><p>14-hour shoulder, hand-pulled, tossed in our vinegar mop.</p></div></article>
+      <article class="dish reveal"><div class="pic"><span class="tag">Spicy</span></div><div class="body"><div class="row"><h3>Hot Links</h3><span class="p">$16</span></div><p>Coarse-ground beef &amp; pork sausage with a jalapeño kick.</p></div></article>
+      <article class="dish reveal"><div class="pic"><span class="tag">Weekends</span></div><div class="body"><div class="row"><h3>Beef Rib</h3><span class="p">$32</span></div><p>The dino rib. One bone, one pound, Saturday &amp; Sunday only.</p></div></article>
+      <article class="dish reveal"><div class="pic"><span class="tag">Feeds 4</span></div><div class="body"><div class="row"><h3>The Pitmaster</h3><span class="p">$78</span></div><p>Brisket, ribs, links, pork &amp; four sides. The whole experience.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="sec" id="gallery">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">From the pit</span>
+      <h2>Smoke, fire &amp; everything in between</h2>
+    </div>
+    <div class="gallery reveal">
+      <div class="gtile tall"><span class="lbl">The offset pit</span></div>
+      <div class="gtile wide"><span class="lbl">Fresh-sliced brisket</span></div>
+      <div class="gtile"><span class="lbl">Bark close-up</span></div>
+      <div class="gtile"><span class="lbl">Mac &amp; cheese</span></div>
+      <div class="gtile wide"><span class="lbl">Rack of ribs</span></div>
+      <div class="gtile tall"><span class="lbl">The dining room</span></div>
+      <div class="gtile"><span class="lbl">House sauces</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="sec" id="reviews" style="background:var(--ink-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Word of mouth</span>
+      <h2>People drive in for this</h2>
+    </div>
+    <div class="quotes">
+      <div class="quote reveal"><span class="stars">★★★★★</span><p>"The brisket is the best I've had outside of Texas. Bark, smoke ring, the works. We waited 40 minutes and would do it again tomorrow."</p><div class="who"><span class="av">M</span><div><b>Marcus T.</b><span>Local guide · 312 reviews</span></div></div></div>
+      <div class="quote reveal"><span class="stars">★★★★★</span><p>"Those beef ribs are a religious experience. Get there before noon on Saturday or they'll be sold out. Worth setting an alarm for."</p><div class="who"><span class="av">A</span><div><b>Aisha R.</b><span>Verified diner</span></div></div></div>
+      <div class="quote reveal"><span class="stars">★★★★★</span><p>"We catered our wedding with Chef Gregory's and guests are still talking about it a year later. Real wood smoke you can taste."</p><div class="who"><span class="av">J</span><div><b>Jordan &amp; Lee</b><span>Catering client</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- VISIT -->
+<section class="sec" id="visit">
+  <div class="wrap">
+    <div class="visit reveal">
+      <div>
+        <span class="eyebrow">Come hungry</span>
+        <h2>Find us &amp; book a table</h2>
+        <p>Walk-ins always welcome, but tables for 6+ fill fast on weekends. Reserve ahead and we'll have the pickles waiting.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary">Reserve a Table</a>
+          <a href="#" class="btn btn-ghost">Order Pickup →</a>
+        </div>
+        <p style="margin-top:1.6rem;font-size:.92rem;color:var(--muted)">📍 1842 Smokehouse Lane · Downtown &nbsp;·&nbsp; 📞 (555) 014-2090</p>
+      </div>
+      <ul class="hours">
+        <li class="open"><span>Today · Wednesday</span><b>11am – 9pm · Open</b></li>
+        <li><span>Mon – Thu</span><b>11am – 9pm</b></li>
+        <li><span>Fri – Sat</span><b>11am – 11pm</b></li>
+        <li><span>Sunday</span><b>11am – 8pm</b></li>
+        <li><span>Pit lights</span><b>4:00am daily</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="#top" class="logo"><span class="mark">🔥</span> Chef Gregory's</a>
+        <p>Real wood, real time, real barbecue. Serving the city low &amp; slow since 2009.</p>
+        <div class="trust" style="margin-top:1.4rem"><span class="stars">★★★★★</span><small>4.9 on Google · 2,400+ reviews</small></div>
+      </div>
+      <div class="foot-col"><h4>Menu</h4><a href="#menu">Plates</a><a href="#menu">By the pound</a><a href="#menu">Sides &amp; sauces</a><a href="#menu">Catering</a></div>
+      <div class="foot-col"><h4>Visit</h4><a href="#visit">Hours</a><a href="#visit">Directions</a><a href="#visit">Reservations</a><a href="#visit">Pickup &amp; delivery</a></div>
+      <div class="foot-col"><h4>Connect</h4><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">Newsletter</a><a href="#">Private events</a></div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 Chef Gregory's BBQ. All rights reserved.</span>
+      <span>Built with 🔥 and patience.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// nav scroll state
+var nav=document.getElementById('nav');
+addEventListener('scroll',function(){nav.classList.toggle('scrolled',scrollY>20)});
+// mobile menu
+var burger=document.getElementById('burger'),links=document.getElementById('navLinks');
+burger.addEventListener('click',function(){links.classList.toggle('open')});
+links.addEventListener('click',function(e){if(e.target.tagName==='A')links.classList.remove('open')});
+// reveal on scroll
+var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}})},{threshold:.12});
+document.querySelectorAll('.reveal:not(.in)').forEach(function(el){io.observe(el)});
+</script>
+</body>
+</html>

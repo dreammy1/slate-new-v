@@ -1,0 +1,184 @@
+name: Deploy
+
+# Manual only. This deploys to a LIVE site, so nothing here fires on a push.
+# Run it from Actions → Deploy → Run workflow, and type the environment name
+# to confirm.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "production" to confirm you mean it'
+        required: true
+        type: string
+      run_migrations:
+        description: 'Apply pending DB migrations after syncing files'
+        required: true
+        type: boolean
+        default: true
+      dry_run:
+        description: 'Rsync --dry-run: show what WOULD change, transfer nothing'
+        required: true
+        type: boolean
+        default: false
+      allow_non_develop:
+        description: 'Deploy a ref other than develop (rollback / hotfix). Read the warning in the run log first.'
+        required: true
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false     # never interrupt a half-finished deploy
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    environment: production     # add required reviewers here in repo settings
+
+    steps:
+      # FIRST, before the checkout and before anything touches the server.
+      #
+      # The ref dropdown pre-selects the repository default branch, which is
+      # main. That is the one ref that must not be deployed casually: main
+      # lags develop, and a deploy from it has already caused real damage —
+      # Deploy #7 on 29 Aug removed plugins/multilang-translate/, which at the
+      # time existed on no branch, because rsync runs with --delete and the
+      # plugin was not in the ref being shipped.
+      #
+      # The default branch is a repository setting and a workflow file cannot
+      # change what the dropdown pre-selects. It can refuse the result, which
+      # is what this does. Rollback from main stays possible — tick
+      # allow_non_develop — it just stops being the thing that happens when
+      # someone accepts the defaults.
+      - name: Refuse a non-develop ref unless explicitly allowed
+        run: |
+          set -uo pipefail
+          REF='${{ github.ref_name }}'
+          if [ "$REF" = "develop" ]; then
+            echo "Ref is 'develop'. Proceeding."
+            exit 0
+          fi
+          if [ "${{ inputs.allow_non_develop }}" = "true" ]; then
+            echo "::warning title=Deploying a non-develop ref::Shipping '$REF', not develop, because allow_non_develop was ticked. Anything present on the server but absent from '$REF' will be DELETED — rsync runs with --delete. Run once with dry_run first and read the deletion list."
+            exit 0
+          fi
+          echo "::error title=Deploy refused: wrong ref::Selected ref is '$REF', not 'develop'. Deploys ship from develop. If you meant to deploy '$REF' — a rollback or a hotfix — re-run this workflow with the 'allow_non_develop' input ticked. Note that rsync runs with --delete, so anything on the server that is absent from '$REF' will be removed; run with dry_run first and read the deletion list before you commit to it."
+          exit 1
+
+      - name: Check the confirmation input
+        run: |
+          if [ "${{ inputs.confirm }}" != "production" ]; then
+            echo "::error::Confirmation text did not match. Deploy aborted."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v7
+
+      # Re-run the fast gates against the exact tree being shipped, so a
+      # manual deploy can't skip CI.
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, json
+          coverage: none
+
+      - name: Lint before shipping
+        run: |
+          set -euo pipefail
+          find . -name '*.php' \
+            -not -path './vendor/*' -not -path './uploads/*' -not -path './scratchpad/*' \
+            -print0 | xargs -0 -n1 -P4 php -l > /dev/null
+
+      - name: Unit tests before shipping
+        run: php tests/unit/run.php
+
+      - name: Load the deploy key
+        uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Trust the host
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ secrets.DEPLOY_SSH_PORT || 22 }}" \
+            -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      # Snapshot the database BEFORE anything touches it. Kept on the server
+      # under ~/slate-backups so a bad migration is recoverable.
+      - name: Back up the database
+        if: ${{ inputs.dry_run == false }}
+        run: |
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT || 22 }}" \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
+            'set -euo pipefail
+             cd "${{ secrets.DEPLOY_PATH }}"
+             mkdir -p ~/slate-backups
+             set -a; . ./.env; set +a
+             mysqldump -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" --single-transaction --quick \
+               | gzip > ~/slate-backups/predeploy_$(date +%F_%H%M%S).sql.gz
+             ls -lh ~/slate-backups | tail -3
+             # Keep the 10 most recent snapshots, drop the rest.
+             ls -1t ~/slate-backups/predeploy_*.sql.gz | tail -n +11 | xargs -r rm --'
+
+      # Claude/ and audit/ are excluded deliberately: they are the security
+      # audit itself — SEC-1 through SEC-8 with file paths, the unauthenticated
+      # maintenance scripts, the APP_SECRET analysis. Publishing the map of the
+      # vulnerabilities next to the fix is worse than shipping either alone.
+      # Both directories also carry their own `Require all denied` .htaccess,
+      # which is what protects them if they ever reach the server by some other
+      # route (a git pull on the host, a manual copy). The excludes are so the
+      # question does not come up again.
+      - name: Sync files
+        run: |
+          rsync -az --delete \
+            ${{ inputs.dry_run == true && '--dry-run --itemize-changes' || '' }} \
+            -e "ssh -p ${{ secrets.DEPLOY_SSH_PORT || 22 }}" \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '.env' \
+            --exclude '.installed' \
+            --exclude 'uploads/' \
+            --exclude 'data/' \
+            --exclude '.claude/' \
+            --exclude 'scratchpad/' \
+            --exclude 'Claude/' \
+            --exclude 'audit/' \
+            --exclude 'tests/.out/' \
+            --exclude '*.log' \
+            --exclude 'error_log' \
+            ./ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+
+      - name: Apply migrations
+        if: ${{ inputs.run_migrations == true && inputs.dry_run == false }}
+        run: |
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT || 22 }}" \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
+            'cd "${{ secrets.DEPLOY_PATH }}" && php bin/migrate migrate && php bin/migrate status'
+
+      # smoke.php is read-only, but tests/guard.php refuses any DB-backed suite
+      # against a database not marked as a test database. Production is exactly
+      # that, so this deliberate opt-in is required or every deploy fails closed.
+      - name: Post-deploy smoke test
+        if: ${{ inputs.dry_run == false }}
+        run: |
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT || 22 }}" \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
+            'cd "${{ secrets.DEPLOY_PATH }}" && SLATE_ALLOW_LIVE_DB=1 php tests/smoke.php'
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Deploy — ${{ job.status }}"
+            echo ""
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| Commit | \`${{ github.sha }}\` |"
+            echo "| Dry run | ${{ inputs.dry_run }} |"
+            echo "| Migrations | ${{ inputs.run_migrations }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

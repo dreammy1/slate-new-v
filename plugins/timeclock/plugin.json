@@ -1,0 +1,13 @@
+{
+    "slug": "timeclock",
+    "name": "Site Timeclock",
+    "version": "1.2.0",
+    "description": "Construction site employee time-tracking: clock in/out, hourly task slots, admin management, in-app docs and weekly/monthly reports.",
+    "author": "Slate Plugins",
+    "author_url": "https://example.com",
+    "requires_core": ">=1.0.0",
+    "permissions": [
+        {"key": "timeclock.view",   "label": "View time entries and reports"},
+        {"key": "timeclock.manage", "label": "Manage entries, employees, sites and tasks"}
+    ]
+}

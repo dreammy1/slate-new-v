@@ -1,0 +1,11 @@
+{
+    "slug": "small-business-kit",
+    "name": "Small Business Kit",
+    "version": "0.1.0",
+    "description": "Modern, field-editable page templates and a swappable theme system for small-business sites. Add hero, feature grids, testimonials, contact and CTA sections as proper Content Builder blocks — then change theme in one click to restyle the whole site.",
+    "author": "Slate",
+    "requires_core": ">=1.0.0",
+    "permissions": [
+        {"key": "sbk.theme", "label": "Change the active small-business theme"}
+    ]
+}

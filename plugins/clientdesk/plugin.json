@@ -1,0 +1,19 @@
+{
+    "slug": "clientdesk",
+    "name": "Client Desk",
+    "version": "2.1.2",
+    "description": "A client portal for web-design/dev freelancers. Onboarding questionnaire, per-project progress dashboards, quotes the client approves online, invoices with Stripe card payments plus attached agreement + requirements brief, file deliverables, project comments, team assignment, support tickets, a searchable client directory that separates direct vs Fiverr clients, per-client custom login links, deadline + overdue automations, an analytics overview, and role-based permissions.",
+    "author": "Rakib Hasan",
+    "author_url": "https://rakibhasaan.com",
+    "requires_core": ">=1.0.0",
+    "works_better_with": ["stripe-payment", "media-library"],
+    "permissions": [
+        {"key": "clientdesk.view",            "label": "View the client directory + projects"},
+        {"key": "clientdesk.manage_clients",  "label": "Create / edit / archive clients + access links"},
+        {"key": "clientdesk.manage_projects", "label": "Create / edit projects, progress, files, comments"},
+        {"key": "clientdesk.manage_quotes",   "label": "Create / send quotes + proposals"},
+        {"key": "clientdesk.manage_invoices", "label": "Create / send invoices, take payments"},
+        {"key": "clientdesk.manage_team",     "label": "Assign team members to projects"},
+        {"key": "clientdesk.handle_support",  "label": "Respond to and close support tickets"}
+    ]
+}

@@ -1,0 +1,35 @@
+{
+    "slug": "shop",
+    "name": "Shop",
+    "version": "1.2.7",
+    "description": "A full-featured e-commerce plugin. Manage products with variants, gallery images, dimensions and categories. Take orders through a public storefront with cart and checkout. Import/export products from CSV.",
+    "author": "Your Name",
+    "author_url": "https://example.com",
+    "requires_core": ">=1.0.0",
+    "permissions": [
+        {
+            "key": "shop.view_orders",
+            "label": "View orders and order details"
+        },
+        {
+            "key": "shop.manage_orders",
+            "label": "Create, edit, and update order status"
+        },
+        {
+            "key": "shop.manage_products",
+            "label": "Create, edit, and delete products"
+        },
+        {
+            "key": "shop.manage_coupons",
+            "label": "Create, edit, and delete coupons"
+        },
+        {
+            "key": "shop.view_reports",
+            "label": "View shop revenue reports"
+        },
+        {
+            "key": "shop.manage_settings",
+            "label": "Change shop settings (currency, tax, shipping)"
+        }
+    ]
+}

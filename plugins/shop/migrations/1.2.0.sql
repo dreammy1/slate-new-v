@@ -1,0 +1,4 @@
+-- Shop v1.2.0 — additional product fields
+-- Idempotent column adds are handled in PHP via Shop::runMigrations()
+-- (see ensureColumn calls in Shop.php). This file is here as a placeholder
+-- to mark v1.2.0 in the migrations history; future v1.2.0-only DDL goes here.

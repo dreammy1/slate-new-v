@@ -1,0 +1,17 @@
+{
+    "slug": "content-builder",
+    "name": "Content Builder",
+    "version": "1.6.1",
+    "description": "Pages, posts, custom post types, taxonomies, and a block-based page builder, section blocks, page templates, navigation menus, branding tokens, header/footer presets, and media-library integration. Core admin nav (Pages, Posts, Templates, Navigation, Global Styles, Visual Page Editor) and other plugins depend on this being active. Keep it active.",
+    "author": "Slate Team",
+    "author_url": "https://example.com",
+    "requires_core": ">=1.0.0",
+    "permissions": [
+        "content.view",
+        "content.edit",
+        "content.publish",
+        "content.delete",
+        "content.manage_types"
+    ],
+    "system": true
+}

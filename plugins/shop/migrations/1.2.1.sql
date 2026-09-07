@@ -1,0 +1,12 @@
+-- Shop v1.2.1 migration
+--
+-- Schema additions for this version are applied at runtime by
+-- Shop::runMigrations() via the ensureColumn() helper, so re-runs are
+-- safe across MySQL and MariaDB versions.
+--
+-- 1.2.1 adds two columns to shop_product_variants:
+--   image_url   VARCHAR(500) NULL  — per-variant image (uploaded or external URL)
+--   description TEXT         NULL  — per-variant description override
+--
+-- Nothing in this file because the .sql migration runner doesn't
+-- conditionally ALTER. See Shop.php for the actual logic.

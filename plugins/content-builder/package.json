@@ -1,0 +1,8 @@
+{
+  "name": "content-builder-tests",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "lint:js": "node --check admin/assets/block-reorder.js && node --check admin/assets/builder.js"
+  }
+}

@@ -1,0 +1,15 @@
+-- v1.2.7 — strip HTML tags from existing product names.
+--
+-- CSV imports from WooCommerce-style exports often carried HTML tags
+-- inside the product name field itself (e.g.
+-- "Southwestern Flair <b>LOW SODIUM</b> Seasoning, <b>SPICY</b>").
+-- The cart, storefront, and product detail pages defensively
+-- HTML-escape names to prevent XSS, so tagged names render as literal
+-- text on the customer-facing pages.
+--
+-- The PHP-side migration in Shop.php is the actual driver — it uses
+-- strip_tags() + html_entity_decode() to normalize each name to plain
+-- text. It is idempotent: re-running on already-clean rows is a no-op.
+--
+-- This .sql file exists so the migration step is visible alongside
+-- the others; the PHP loop is what actually runs.

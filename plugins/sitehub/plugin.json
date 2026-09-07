@@ -1,0 +1,14 @@
+{
+    "slug": "sitehub",
+    "name": "SiteHub",
+    "version": "1.1.3",
+    "description": "Central control plane for PortKit-equipped WordPress sites. Register your client sites once, then monitor health, run cross-site Site Doctor audits, push bundles or shared components, pull backups, and apply fleet-wide fixes — all from Slate.",
+    "author": "Rakib Hasan",
+    "author_url": "https://rakibhasaan.com",
+    "requires_core": ">=1.0.0",
+    "works_better_with": ["stripe-payment"],
+    "permissions": [
+        {"key": "sitehub.view",   "label": "View connected sites and reports"},
+        {"key": "sitehub.manage", "label": "Add/remove sites, push, pull and apply fixes"}
+    ]
+}

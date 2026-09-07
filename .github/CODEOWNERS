@@ -1,0 +1,9 @@
+# Default owner for everything.
+*                       @rakib6564
+
+# Anything that can break the live site or leak credentials.
+/.github/               @rakib6564
+/config.php             @rakib6564
+/db/migrations/         @rakib6564
+/.gitignore             @rakib6564
+/SECURITY.md            @rakib6564

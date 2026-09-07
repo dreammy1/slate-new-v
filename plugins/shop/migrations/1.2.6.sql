@@ -1,0 +1,11 @@
+-- v1.2.6 — add unguessable capability token to orders.
+-- Before this fix, /shop/order?key=<order_number> used the sequential
+-- order_number (e.g. ORD-00001) as the auth key, leaking customer PII
+-- by URL enumeration. We add `view_token` (32 hex chars = 128 bits of
+-- entropy) and switch the storefront lookup to use it.
+--
+-- The PHP-side migration in Shop.php is the actual driver — it adds
+-- the column with ensureColumn() (idempotent + portable across MySQL
+-- versions) and backfills tokens for existing rows using PHP's
+-- random_bytes(). This .sql file exists so the migration step is
+-- visible alongside the others; the PHP loop is what actually runs.

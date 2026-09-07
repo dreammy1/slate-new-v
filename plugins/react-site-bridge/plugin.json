@@ -1,0 +1,12 @@
+{
+  "slug": "react-site-bridge",
+  "name": "React Site Bridge",
+  "version": "0.7.15",
+  "description": "Tenant-scoped content manifests, media mappings, visual route-content editing, and a compact cross-device live-canvas editor. Adds a reliable layered Show controls recovery path plus a responsive Edit History & Revisions panel with synchronized session actions, preview, rollback, baseline and published-revision loading, and dock or overlay presentation. Includes a unified single-row header, responsive inspector, compact action row, concise small-screen route navigation, all-device inspector hide/show, Edit and Scroll modes, local undo and redo, selected-element reset, searchable approved media, comparison-based publish review, text, links, images, background images, reversible transparent text-background removal, dark-overlay contrast, focal-point crop previews, Slate Media upload-and-map workflow, guided imports, direct Slate-hosted React releases, recoverable site management, and Slate-domain preview links.",
+  "author": "Slate",
+  "requires_core": ">=1.0.0",
+  "permissions": [
+    {"key": "react-site-bridge.manage", "label": "Manage React sites, documents, media mappings, and previews"},
+    {"key": "react-site-bridge.publish", "label": "Publish React site revisions"}
+  ]
+}

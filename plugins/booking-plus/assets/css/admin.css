@@ -1,0 +1,8 @@
+/* Booking+ admin — uses core glass tokens; nothing plugin-specific yet. */
+
+.stack > * + * { margin-top: var(--space-4); }
+.form-row      { margin-bottom: var(--space-3); }
+.form-row label > span { display:block; font-weight:600; margin-bottom:4px; }
+.form-row input, .form-row select, .form-row textarea { width:100%; }
+.form-row small.muted { display:block; margin-top:4px; }
+.form-actions { display:flex; gap:var(--space-3); margin-top:var(--space-4); }

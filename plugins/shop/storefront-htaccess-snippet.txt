@@ -1,0 +1,37 @@
+# ============================================================
+# Slate Shop storefront — Apache rewrites
+# ============================================================
+# Copy the block below into your Slate root .htaccess (anywhere
+# after the Options/AddDefaultCharset lines). This routes the
+# public storefront URLs through the Shop plugin's router.
+#
+#   /shop/                        → catalog (all products)
+#   /shop/product/<slug>          → product detail page
+#   /shop/category/<slug>         → category listing
+#   /shop/cart                    → cart
+#   /shop/checkout                → checkout
+#   /shop/order?key=<view_token> → order confirmation
+#
+# ⚠ IMPORTANT — RewriteBase MUST match where Slate is installed:
+#
+#   Slate at domain root:   RewriteBase /
+#   Slate at /slate/:        RewriteBase /slate/
+#   Slate at /shop-admin/:   RewriteBase /shop-admin/
+#
+# The Shop admin dashboard auto-detects this and shows a personalized
+# snippet for your install. Use that one, not this generic copy, if
+# the two differ.
+# ============================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Don't rewrite if the request is for an existing file or directory
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Route /shop and /shop/* through the storefront router
+    RewriteRule ^shop/?$               plugins/shop/storefront/router.php?_path= [L,QSA]
+    RewriteRule ^shop/(.+)$            plugins/shop/storefront/router.php?_path=$1 [L,QSA]
+</IfModule>

@@ -1,0 +1,13 @@
+{
+    "slug": "booking-plus",
+    "name": "Booking+",
+    "version": "0.2.0",
+    "description": "Companion to the Booking plugin — per-service extras for practitioners: preparation-page + WhatsApp links, automatic post-booking response, per-service min-advance-days gate (HSR-style delays), prerequisite-service gate (e.g. requires a prior Discovery Call), a client-facing 'human message' step routed to the practitioner, an 8-hour internal nudge if no reply, and manual/fallback Zoom link handling. Seeds the multi-tier reminder cadence (8 days / day before / 10 minutes) on activate.",
+    "author": "Slate",
+    "requires_core": ">=1.0.0",
+    "works_better_with": ["booking", "stripe-payment", "forms"],
+    "permissions": [
+        {"key": "bookingplus.manage_settings", "label": "Configure per-service extras and global Booking+ settings"},
+        {"key": "bookingplus.reply_messages",  "label": "View and reply to client 'human message' threads"}
+    ]
+}

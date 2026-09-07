@@ -1,0 +1,156 @@
+/* Client Desk — component styles. Tokens only; native look. */
+
+/* KPI tiles */
+.cd-tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:var(--space-3); margin-bottom:var(--space-4); }
+.cd-tile { position:relative; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-4); overflow:hidden; }
+.cd-tile-bar { position:absolute; top:0; left:0; width:3px; height:100%; }
+.cd-tile-label { font:600 11px/1.2 var(--font-sans); text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+.cd-tile-value { font:600 28px/1.1 var(--font-display); color:var(--text); margin-top:6px; }
+.cd-tile-sub { font:500 12px var(--font-sans); color:var(--subtle); margin-top:2px; }
+
+/* Linear progress bar */
+.cd-bar { background:var(--surface-2); border-radius:999px; height:8px; overflow:hidden; }
+.cd-bar > span { display:block; height:100%; border-radius:999px; transition:width .6s ease; }
+
+/* Bar chart (flexbox + CSS-height bars — crisp and correctly sized) */
+.cd-bc { display:flex; align-items:flex-end; gap:10px; }
+.cd-bc-col { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:7px; }
+.cd-bc-val { font:600 11px/1 var(--font-sans); color:var(--text-2); height:12px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.cd-bc-track {
+  position:relative; width:100%; max-width:72px; height:var(--cd-bc-h,180px);
+  display:flex; align-items:flex-end;
+  border-radius:9px;
+  background:
+    repeating-linear-gradient(to top, transparent 0, transparent 24px, var(--border) 24px, var(--border) 25px),
+    var(--surface-2);
+}
+.cd-bc-bar {
+  width:100%; min-height:3px; border-radius:8px 8px 0 0;
+  background:linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 72%, #fff));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3);
+  transition:height .6s cubic-bezier(.22,1,.36,1);
+}
+.cd-bc-label { font:500 11.5px/1 var(--font-sans); color:var(--muted); white-space:nowrap; }
+@media (max-width:480px){
+  .cd-bc { gap:6px; }
+  .cd-bc-val { font-size:10px; }
+  .cd-bc-label { font-size:10.5px; }
+}
+
+/* Segmented breakdown */
+.cd-seg { display:flex; height:12px; border-radius:999px; overflow:hidden; background:var(--surface-2); }
+.cd-seg > span { display:block; height:100%; }
+.cd-seg-legend { display:flex; flex-wrap:wrap; gap:var(--space-3); margin-top:var(--space-2); }
+.cd-seg-key { display:inline-flex; align-items:center; gap:6px; font:500 12px var(--font-sans); color:var(--text-2); }
+.cd-seg-key i { width:10px; height:10px; border-radius:3px; display:inline-block; }
+.cd-seg-key b { color:var(--text); }
+
+/* Phase stepper */
+.cd-stepper { display:flex; gap:4px; align-items:flex-start; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
+.cd-step { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1 0 auto; min-width:62px; position:relative; }
+.cd-step::before { content:""; position:absolute; top:13px; left:-50%; width:100%; height:2px; background:var(--border); z-index:0; }
+.cd-step:first-child::before { display:none; }
+.cd-step-dot { position:relative; z-index:1; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font:600 12px var(--font-sans); background:var(--surface-2); color:var(--muted); border:2px solid var(--border); flex:none; }
+.cd-step-label { font:500 11px var(--font-sans); color:var(--muted); text-align:center; max-width:72px; }
+.cd-step-done .cd-step-dot { background:var(--success); color:#fff; border-color:var(--success); }
+.cd-step-done::before { background:var(--success); }
+.cd-step-current .cd-step-dot { background:var(--accent); color:#fff; border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
+.cd-step-current .cd-step-label { color:var(--text); font-weight:600; }
+
+/* Tabs */
+.cd-tabs { display:flex; gap:2px; border-bottom:1px solid var(--border); margin-bottom:var(--space-4); overflow-x:auto; }
+.cd-tab { padding:10px 16px; font:600 13px var(--font-sans); color:var(--muted); border-bottom:2px solid transparent; white-space:nowrap; cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; }
+.cd-tab:hover { color:var(--text-2); }
+.cd-tab.is-active { color:var(--accent); border-bottom-color:var(--accent); }
+.cd-panel { display:none; }
+.cd-panel.is-active { display:block; }
+
+/* File grid */
+.cd-files { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:var(--space-3); }
+.cd-file { border:1px solid var(--border); border-radius:var(--radius); padding:var(--space-3); display:flex; flex-direction:column; gap:4px; background:var(--surface); }
+.cd-file-thumb { height:88px; border-radius:var(--radius-sm); background:var(--surface-2); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.cd-file-thumb img { width:100%; height:100%; object-fit:cover; }
+.cd-file-name { font:600 12px var(--font-sans); color:var(--text); word-break:break-word; }
+.cd-file-meta { font:500 11px var(--font-sans); color:var(--subtle); }
+
+/* Chat-style threads */
+.cd-msg { padding:var(--space-3); border-radius:var(--radius); margin-bottom:var(--space-2); max-width:85%; }
+.cd-msg-staff { background:var(--accent-soft); margin-left:auto; }
+.cd-msg-client { background:var(--surface-2); }
+.cd-msg-head { font:600 11px var(--font-sans); color:var(--muted); margin-bottom:4px; }
+.cd-msg-body { font:400 14px/1.5 var(--font-sans); color:var(--text); white-space:pre-wrap; }
+
+/* Approve/decline quote banner */
+.cd-quote-actions { display:flex; gap:var(--space-2); margin-top:var(--space-3); }
+
+/* Subtle entrance */
+.cd-fade { animation:cdFade .35s ease both; }
+@keyframes cdFade { from { opacity:0; transform:translateY(6px);} to {opacity:1; transform:none;} }
+
+/* ============ Customer portal redesign ============ */
+.cdp-hero { background:linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%); color:#fff; border-radius:var(--radius-xl); padding:24px 26px; margin-bottom:var(--space-4); }
+.cdp-hero h1 { color:#fff; font:700 24px var(--font-display); margin:0 0 4px; }
+.cdp-hero p { color:rgba(255,255,255,.85); margin:0; font-size:14px; }
+.cdp-hero-meta { display:flex; gap:24px; flex-wrap:wrap; margin-top:16px; }
+.cdp-hero-stat { min-width:0; }
+.cdp-hero-stat b { display:block; font:700 22px var(--font-display); }
+.cdp-hero-stat span { font-size:12px; color:rgba(255,255,255,.8); text-transform:uppercase; letter-spacing:.04em; }
+
+/* In-page section nav (sticky pills) */
+.cdp-nav { position:sticky; top:8px; z-index:5; display:flex; gap:6px; flex-wrap:wrap; padding:8px; background:var(--surface); border:1px solid var(--border); border-radius:999px; margin-bottom:var(--space-4); }
+.cdp-nav a { padding:7px 15px; border-radius:999px; font:600 13px var(--font-sans); color:var(--text-2); text-decoration:none; white-space:nowrap; }
+.cdp-nav a:hover { background:var(--surface-2); color:var(--text); }
+.cdp-nav a .cdp-nav-count { color:var(--muted); font-weight:500; }
+
+.cdp-section-title { font:600 13px var(--font-sans); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); margin:var(--space-6) 0 var(--space-3); }
+.cdp-section-title:first-child { margin-top:0; }
+
+/* Project card */
+.cdp-project { margin-bottom:var(--space-4); }
+.cdp-project-head { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+.cdp-project-head h2 { font:700 18px var(--font-display); color:var(--text); margin:0; min-width:0; overflow-wrap:anywhere; }
+.cdp-line { display:flex; justify-content:space-between; gap:12px; align-items:baseline; padding:9px 0; border-bottom:1px solid var(--border); min-width:0; }
+.cdp-line:last-child { border-bottom:none; }
+.cdp-line-label { min-width:0; overflow-wrap:anywhere; color:var(--text-2); }
+.cdp-line-value { flex:none; text-align:right; color:var(--text); font-variant-numeric:tabular-nums; }
+
+/* Quote card emphasis */
+.cdp-quote { border:2px solid var(--accent-soft); border-radius:var(--radius-lg); }
+
+/* Deliverables / file tiles reuse .cd-files */
+
+/* Sticky scroll offset for anchor jumps */
+.cdp-anchor { scroll-margin-top:70px; }
+
+/* Empty illustration */
+.cdp-empty { text-align:center; padding:32px 16px; }
+.cdp-empty-icon { width:48px; height:48px; margin:0 auto 12px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font:700 22px var(--font-display); }
+
+@media (max-width:640px){
+  .cdp-hero-meta { gap:16px; }
+  .cdp-nav { border-radius:var(--radius-lg); }
+}
+
+/* ============ Mobile overflow safety (plugin-wide) ============
+   Ensure no Client Desk component can force the page wider than the
+   viewport on small screens. */
+.cd-tiles, .cd-files { min-width: 0; }
+.cd-tile, .cd-file, .cd-msg, .cdp-project, .card { min-width: 0; max-width: 100%; }
+.cd-doc { max-width: 100%; }
+/* Long project titles in the page header must wrap, not push width. */
+.page-header h1 { overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
+@media (max-width: 640px) {
+  .cd-tiles { grid-template-columns: 1fr 1fr; }
+  .cd-files { grid-template-columns: 1fr 1fr; }
+  .cd-msg { max-width: 100%; }
+  #cd-doc { padding: 24px 18px; }
+  .cd-doc-top, .cd-doc-parties { flex-direction: column; }
+  .cd-doc-head-right, .cd-doc-meta { text-align: left; }
+  .cd-doc-meta-row { justify-content: flex-start; }
+  .cd-doc-totals { width: 100%; }
+  /* Long words/URLs in any plugin text must wrap, never push width. */
+  .cd-msg-body, .cdp-line-label, .cd-file-name, .cd-doc-prose { overflow-wrap: anywhere; word-break: break-word; }
+}
+@media (max-width: 380px) {
+  .cd-tiles, .cd-files { grid-template-columns: 1fr; }
+}

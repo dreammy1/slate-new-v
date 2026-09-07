@@ -1,0 +1,14 @@
+DROP TABLE IF EXISTS `clientdesk_access_requests`;
+DROP TABLE IF EXISTS `clientdesk_templates`;
+DROP TABLE IF EXISTS `clientdesk_comments`;
+DROP TABLE IF EXISTS `clientdesk_files`;
+DROP TABLE IF EXISTS `clientdesk_quotes`;
+DROP TABLE IF EXISTS `clientdesk_ticket_messages`;
+DROP TABLE IF EXISTS `clientdesk_tickets`;
+DROP TABLE IF EXISTS `clientdesk_invoices`;
+DROP TABLE IF EXISTS `clientdesk_assignments`;
+DROP TABLE IF EXISTS `clientdesk_intake`;
+DROP TABLE IF EXISTS `clientdesk_activity`;
+DROP TABLE IF EXISTS `clientdesk_milestones`;
+DROP TABLE IF EXISTS `clientdesk_projects`;
+DROP TABLE IF EXISTS `clientdesk_clients`;

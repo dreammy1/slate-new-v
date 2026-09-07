@@ -1,0 +1,11 @@
+{
+  "slug": "slate-mcp",
+  "name": "Slate AI Gateway",
+  "version": "0.1.0",
+  "description": "Scoped, revocable MCP-compatible tools for approved AI access to Slate content and React Site Bridge sites.",
+  "author": "Slate",
+  "requires_core": ">=1.0.0",
+  "permissions": [
+    {"key": "slate-mcp.manage", "label": "Manage Slate AI Gateway access tokens"}
+  ]
+}

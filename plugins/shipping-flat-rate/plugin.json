@@ -1,0 +1,15 @@
+{
+    "slug": "shipping-flat-rate",
+    "name": "Flat Rate Shipping (USPS-style boxes)",
+    "version": "1.0.3",
+    "description": "Charge a fixed price per box at checkout. Admins define box presets (Small/Medium/Large/etc) and pick which box each product ships in. Cart's shipping cost is the sum of boxes needed to pack the cart with greedy bin-packing. Defaults populated with USPS Flat Rate prices.",
+    "author": "Slate",
+    "author_url": "",
+    "requires_core": ">=1.0.0",
+    "permissions": [
+        {
+            "key": "shipping_flat_rate.manage",
+            "label": "Manage flat-rate shipping boxes"
+        }
+    ]
+}

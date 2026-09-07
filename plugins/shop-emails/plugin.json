@@ -1,0 +1,12 @@
+{
+    "slug": "shop-emails",
+    "name": "Shop email notifications",
+    "version": "1.0.0",
+    "description": "Sends order-related emails — customer order confirmation, customer payment-completed notification, admin new-order notification. Templates are overridable via the settings table (default templates are built-in). Requires the Shop plugin to fire its order hooks, and SMTP configured in Slate → Settings → Email.",
+    "author": "Your Name",
+    "author_url": "https://example.com",
+    "requires_core": ">=1.0.0",
+    "permissions": [
+        {"key": "shop_emails.manage", "label": "Configure shop email templates and recipients"}
+    ]
+}

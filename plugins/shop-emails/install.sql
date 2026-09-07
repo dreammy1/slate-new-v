@@ -1,0 +1,9 @@
+-- shop-emails plugin: no schema required.
+--
+-- Templates and admin recipient address live in the existing
+-- `settings` table (keys: shop_email.tpl_*, shop_email.admin_to).
+-- Defaults are hardcoded in ShopEmails.php and override-able via
+-- the plugin's admin page.
+--
+-- This file exists to satisfy the PluginLoader's install.sql
+-- requirement.

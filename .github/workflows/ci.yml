@@ -1,0 +1,315 @@
+name: CI
+
+on:
+  push:
+    # No branch filter, deliberately — every push is built, whatever the branch is
+    # called. What follows is why, because the obvious "just list the prefixes"
+    # was tried and kept failing.
+    #
+    # A missing prefix is not "untested" in a visible way — it produces no run at
+    # all, so a branch sits waiting for a green that will never arrive. That
+    # happened twice: first to develop and feat/**, then to hotfix/**, on the
+    # branch carrying a live security fix, which is exactly when CI matters most.
+    #
+    # Then a third time, to perf/**: a pushed branch reported no checks at all and
+    # was mistaken for "awaiting CI". An audit of every prefix actually in use
+    # (git branch -a | cut -d/ -f1 | sort -u) found claude/** silently missing too.
+    #
+    # The allowlist that used to live here failed four times, so it is gone: push
+    # now runs on EVERY branch and no prefix can be forgotten. The failure mode it
+    # kept producing was the worst kind — not a red run, but no run at all, which
+    # is indistinguishable from a branch nobody has checked yet.
+    #
+    # The cost is runner minutes on branches that might not have needed a run. The
+    # concurrency group below already cancels superseded runs per ref, so the bill
+    # is one run per pushed tip rather than one per push. That is the trade, made
+    # deliberately: minutes are cheap and a silently unchecked branch is not.
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+# One CI run per branch; a new push cancels the previous run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ── 1. Syntax gate — cheapest signal, fails fastest ──────────────
+  lint:
+    name: Lint (php -l)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      # php -l is doubly unhelpful by default: without display_errors it prints
+      # only "Errors parsing <file>" with no reason or line, and piping to
+      # /dev/null threw even that away — a CI parse failure was an exit code and
+      # nothing else. Adding display_errors alone would not have helped while the
+      # output was still discarded. Now success is silent and a failure prints
+      # the actual message.
+      - name: Syntax-check every PHP file
+        run: |
+          set -euo pipefail
+          # vendor/ is a vendored PHPMailer copy we don't own; uploads/ and
+          # scratchpad/ are runtime data, not source.
+          find . -name '*.php' \
+            -not -path './vendor/*' \
+            -not -path './uploads/*' \
+            -not -path './scratchpad/*' \
+            -print0 \
+          | xargs -0 -n1 -P4 sh -c 'out=$(php -d display_errors=1 -l "$1" 2>&1) || { printf "%s\n" "$out"; exit 1; }' _
+          echo "All PHP files parse cleanly."
+
+  # ── 2. Secret guard — stops a repeat of the config.php leak ──────
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Fail if credentials or a real .env are committed
+        run: |
+          set -uo pipefail
+          fail=0
+
+          if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+            echo "::error file=.env::.env is tracked by git. It must stay ignored."
+            fail=1
+          fi
+
+          # Live-looking provider keys. Placeholders (sk_test_…, sk_live_…) are
+          # allowed; anything with a real-length body is not.
+          if git grep -nIE '(sk|pk)_(live|test)_[A-Za-z0-9]{20,}' -- \
+               ':!docs' ':!*.md' ':!vendor' >/dev/null 2>&1; then
+            echo "::error::A live-looking Stripe key is committed."
+            git grep -nIE '(sk|pk)_(live|test)_[A-Za-z0-9]{20,}' -- ':!docs' ':!*.md' ':!vendor' || true
+            fail=1
+          fi
+
+          if git grep -nIE 'AKIA[0-9A-Z]{16}' -- ':!vendor' >/dev/null 2>&1; then
+            echo "::error::An AWS access key id is committed."
+            fail=1
+          fi
+
+          # config.php must never carry a non-empty DB_PASS default again.
+          if git grep -nE "env\('DB_PASS',\s*'.+'\)" -- config.php >/dev/null 2>&1; then
+            echo "::error file=config.php::config.php has a non-empty DB_PASS fallback."
+            fail=1
+          fi
+
+          [ "$fail" -eq 0 ] && echo "No committed secrets found."
+          exit $fail
+
+  # ── 3. Anti-drift guard (CORE-1) ────────────────────────────────
+  # Five helpers exist so five classes of bug cannot recur. This fails the
+  # build when code reaches around one of them. Ratchets against a baseline:
+  # pre-existing violations are recorded, only NEW ones break the build.
+  anti-drift:
+    name: Anti-drift (CORE-1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Check for new violations
+        run: php bin/anti-drift.php
+
+      - name: Rule summary
+        if: always()
+        run: php bin/anti-drift.php --list
+
+  # ── 4. Unit suite — no database, so it gates every PHP version ───
+  unit:
+    name: Unit tests (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4']   # 8.4 is production (EA-PHP 8.4); 8.3 catches drift
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, json
+          coverage: none
+
+      - name: Run unit tests
+        run: php tests/unit/run.php
+
+  # ── 4. DB-backed suites — integration, smoke, page-render ────────
+  integration:
+    name: Integration + smoke + render
+    runs-on: ubuntu-latest
+    needs: lint
+
+    # CI gets its own database per run, so it pins namespace 0 rather than
+    # deriving one from the runner's checkout path. Identifiers then stay stable
+    # and greppable across runs — a failing tenant id means the same thing in
+    # every log.
+    env:
+      SLATE_TEST_NS: 0
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: slate_test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo, pdo_mysql, mbstring, json
+          coverage: none
+
+      - name: Wait for MySQL
+        run: |
+          for i in $(seq 1 30); do
+            if mysqladmin ping -h 127.0.0.1 -P 3306 -uroot -proot --silent; then
+              echo "MySQL is up."; exit 0
+            fi
+            sleep 2
+          done
+          echo "MySQL never became ready."; exit 1
+
+      - name: Write CI .env
+        run: |
+          cat > .env <<'ENV'
+          APP_URL=http://localhost
+          TENANT_ID=1
+          APP_SECRET=ci-only-secret-not-used-in-production-0000000000000000
+          CRON_SECRET=ci-only-cron-secret-0000000000000000000000000000000000
+          DB_HOST=127.0.0.1
+          DB_NAME=slate_test
+          DB_USER=root
+          DB_PASS=root
+          DB_CHARSET=utf8mb4
+          ENV
+
+      - name: Apply migrations
+        run: php bin/migrate migrate
+
+      - name: Show migration status
+        run: php bin/migrate status
+
+      - name: Seed the default tenant
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -uroot -proot slate_test <<'SQL'
+          INSERT INTO tenants (id, name, slug, status)
+          VALUES (1, 'CI Tenant', 'ci-tenant', 'active')
+          ON DUPLICATE KEY UPDATE name = VALUES(name), status = VALUES(status);
+
+          INSERT INTO roles (id, tenant_id, name, slug, description, is_system)
+          VALUES (1, 1, 'Super Admin', 'super-admin', 'CI test administrator', 1)
+          ON DUPLICATE KEY UPDATE tenant_id = VALUES(tenant_id), name = VALUES(name), slug = VALUES(slug);
+
+          INSERT INTO users (tenant_id, email, password_hash, name, role_id, status)
+          VALUES (1, 'ci-admin@example.test', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC4WvO75mGxU2Rz1nO', 'CI Admin', 1, 'active')
+          ON DUPLICATE KEY UPDATE tenant_id = VALUES(tenant_id), role_id = VALUES(role_id), status = VALUES(status);
+
+          INSERT INTO settings (tenant_id, setting_key, setting_value)
+          VALUES (1, 'site_name', 'Slate CI')
+          ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
+
+          -- Marker tests/guard.php requires before it will run a DB-backed suite.
+          INSERT INTO settings (tenant_id, setting_key, setting_value)
+          VALUES (1, 'slate_test_database', '1')
+          ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
+
+          INSERT INTO plugins (slug, name, version, status, manifest_json)
+          VALUES ('content-builder', 'Content Builder', '1.0.0', 'active', '{"slug":"content-builder","name":"Content Builder","version":"1.0.0"}')
+          ON DUPLICATE KEY UPDATE status = VALUES(status), manifest_json = VALUES(manifest_json);
+
+          -- Forms is active because the form block now renders INLINE into
+          -- content pages, so its tests exercise the content render path. With
+          -- it inactive they skip, and a skipped test is a green tick over
+          -- nothing. Verified not to move the render goldens or page counts.
+          INSERT INTO plugins (slug, name, version, status, manifest_json)
+          VALUES ('forms', 'Forms', '1.0.0', 'active', '{"slug":"forms","name":"Forms","version":"1.0.0"}')
+          ON DUPLICATE KEY UPDATE status = VALUES(status), manifest_json = VALUES(manifest_json);
+
+          -- Booking, for the same reason as Forms: its block renders inline into
+          -- content pages now, so its tests exercise the content render path and
+          -- skip silently without it. Verified not to move goldens or page counts.
+          INSERT INTO plugins (slug, name, version, status, manifest_json)
+          VALUES ('booking', 'Booking', '1.0.0', 'active', '{"slug":"booking","name":"Booking","version":"1.0.0"}')
+          ON DUPLICATE KEY UPDATE status = VALUES(status), manifest_json = VALUES(manifest_json);
+
+          -- Membership, for the same reason: its plans block renders into content
+          -- pages, so its tests exercise the content render path and skip without
+          -- it. Verified not to move goldens or page counts.
+          INSERT INTO plugins (slug, name, version, status, manifest_json)
+          VALUES ('membership', 'Membership', '1.0.0', 'active', '{"slug":"membership","name":"Membership","version":"1.0.0"}')
+          ON DUPLICATE KEY UPDATE status = VALUES(status), manifest_json = VALUES(manifest_json);
+          SQL
+
+      - name: Install Content Builder test schema
+        run: mysql -h 127.0.0.1 -P 3306 -uroot -proot slate_test < plugins/content-builder/install.sql
+
+      - name: Install Forms test schema
+        run: mysql -h 127.0.0.1 -P 3306 -uroot -proot slate_test < plugins/forms/install.sql
+
+      - name: Install Booking test schema
+        run: mysql -h 127.0.0.1 -P 3306 -uroot -proot slate_test < plugins/booking/install.sql
+
+      # install.sql alone is NOT the schema booking writes to. party_size,
+      # discount_cents, gift_applied_cents, stripe_session_id and a dozen more
+      # exist only as ensureColumn() calls in Booking.php, in no .sql file, so
+      # loading SQL can never produce them and BookingAPI::createAppointment()
+      # fails on "Unknown column 'discount_cents'". This runs the plugin's own
+      # migration, which is where that column list actually lives.
+      - name: Migrate Booking test schema
+        run: php tests/fixtures/booking-schema.php
+
+      - name: Install Membership test schema
+        run: mysql -h 127.0.0.1 -P 3306 -uroot -proot slate_test < plugins/membership/install.sql
+
+      # Without this the parent-facing studio views have no class, recital or
+      # family to render, so four of them are skipped and the suite's count
+      # tracks the database rather than the repository.
+      - name: Seed render fixtures
+        run: mysql -h 127.0.0.1 -P 3306 -uroot -proot slate_test < tests/fixtures/render-seed.sql
+
+      - name: Smoke tests
+        run: php tests/smoke.php
+
+      - name: Integration tests
+        run: php tests/integration/run.php
+
+      - name: Page-render tests
+        run: php tests/render/run.php
+
+      # The React renderer is checked against the same goldens the PHP renderer
+      # produced, so a block cannot drift between the two outputs.
+      - name: JS renderer tests
+        run: node tests/js/render.test.mjs
