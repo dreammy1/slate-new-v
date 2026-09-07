@@ -505,8 +505,8 @@ class BookingAPI {
         }
         if (!$resources) return 0;
 
-        $startSql = date('Y-m-d H:i:s', $startTs);
-        $endSql   = date('Y-m-d H:i:s', $endTs);
+        $startSql = date('Y-m-d H:i:s', $startTs); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
+        $endSql   = date('Y-m-d H:i:s', $endTs); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
         foreach ($resources as $r) {
             $used = (int) Database::value(
                 "SELECT COALESCE(SUM(party_size), 0) FROM booking_appointments
@@ -650,8 +650,8 @@ class BookingAPI {
          *
          * Tracked: Claude/slate-issue-queue.md, CORE-1 follow-ups. Audit: H-4.
          */
-        $endsAt      = date('Y-m-d H:i:s', $endTs);
-        $startsAtSql = date('Y-m-d H:i:s', $startTs);
+        $endsAt      = date('Y-m-d H:i:s', $endTs); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
+        $startsAtSql = date('Y-m-d H:i:s', $startTs); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
         $tid         = current_tenant_id();
 
         // Validate against working hours / overrides / breaks (admin may skip).
@@ -705,8 +705,8 @@ class BookingAPI {
         $pdo = Database::get();
         $pdo->beginTransaction();
         try {
-            $padStart = date('Y-m-d H:i:s', $startTs - $bufferBefore * 60);
-            $padEnd   = date('Y-m-d H:i:s', $endTs   + $bufferAfter  * 60);
+            $padStart = date('Y-m-d H:i:s', $startTs - $bufferBefore * 60); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
+            $padEnd   = date('Y-m-d H:i:s', $endTs   + $bufferAfter  * 60); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
             $taken = (int) Database::value(
                 "SELECT COALESCE(SUM(party_size), 0) FROM booking_appointments
                   WHERE provider_id = ? AND tenant_id = ? AND status IN ('pending','awaiting_approval','confirmed')
@@ -1076,14 +1076,14 @@ class BookingAPI {
         }
         if (!$fits) return ['ok' => false, 'error' => 'That time is outside the provider\'s working hours.'];
 
-        $startsAtSql = date('Y-m-d H:i:s', $startTs);
-        $endsAtSql   = date('Y-m-d H:i:s', $endTs);
+        $startsAtSql = date('Y-m-d H:i:s', $startTs); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
+        $endsAtSql   = date('Y-m-d H:i:s', $endTs); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
 
         $pdo = Database::get();
         $pdo->beginTransaction();
         try {
-            $padStart = date('Y-m-d H:i:s', $startTs - $bufferBefore * 60);
-            $padEnd   = date('Y-m-d H:i:s', $endTs   + $bufferAfter  * 60);
+            $padStart = date('Y-m-d H:i:s', $startTs - $bufferBefore * 60); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
+            $padEnd   = date('Y-m-d H:i:s', $endTs   + $bufferAfter  * 60); // anti-drift-ignore: CLOCK — user-selected appointment instant, formatted in the application timezone;
             $taken = (int) Database::value(
                 "SELECT COALESCE(SUM(party_size), 0) FROM booking_appointments
                   WHERE provider_id = ? AND tenant_id = ? AND status IN ('pending','awaiting_approval','confirmed')

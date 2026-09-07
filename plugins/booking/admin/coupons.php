@@ -96,7 +96,7 @@ require SLATE_ROOT . '/admin/partials/header.php';
     $valDisplay = $c['type'] === 'fixed' ? number_format(((int)$c['value'])/100, 2, '.', '') : (string)(int)$c['value'];
     $cInitials  = ($editing && trim((string)$editing['code']) !== '') ? mb_strtoupper(mb_substr($editing['code'], 0, 2)) : '%';
     $cDiscount  = $c['type'] === 'fixed' ? number_format(((int)$c['value'])/100, 2) : (int)$c['value'] . '<small>%</small>';
-    $cExpired   = !empty($c['expires_at']) && strtotime($c['expires_at']) < time();
+    $cExpired   = !empty($c['expires_at']) && strtotime($c['expires_at']) < slate_db_time();
 ?>
 <?php booking_editor_css(); ?>
 
@@ -193,7 +193,7 @@ require SLATE_ROOT . '/admin/partials/header.php';
     <div class="data-list" data-single-open>
         <?php foreach ($coupons as $c):
             $val = $c['type'] === 'fixed' ? number_format(((int)$c['value'])/100, 2) : (int)$c['value'] . '%';
-            $expired = !empty($c['expires_at']) && strtotime($c['expires_at']) < time();
+            $expired = !empty($c['expires_at']) && strtotime($c['expires_at']) < slate_db_time();
             $actions = '<a href="?edit=' . (int)$c['id'] . '" class="btn btn-sm">Edit</a> '
                      . '<form method="post" style="display:inline;margin:0;" onsubmit="return confirm(\'Delete this coupon?\')">'
                      . csrf_field()

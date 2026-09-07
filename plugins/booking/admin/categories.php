@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $categories = Database::rows(
-    "SELECT c.*, (SELECT COUNT(*) FROM booking_services s WHERE s.category_id = c.id) AS service_count
+    "SELECT c.*, (SELECT COUNT(*) FROM booking_services s WHERE s.category_id = c.id AND s.tenant_id = c.tenant_id) AS service_count
        FROM booking_categories c WHERE c.tenant_id = ? ORDER BY c.sort_order, c.name",
     [$tid]
 );
